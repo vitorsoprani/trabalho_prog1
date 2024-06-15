@@ -15,7 +15,7 @@ typedef struct {
 }tPonto;
 
 tPonto LePonto(FILE* arquivo);
-/*Le o um ponto no arquivo indicado (idealmente no arquiivo de configuração do mapa)*/
+/*Le o um ponto no arquivo indicado (idealmente o arquiivo de configuração do mapa)*/
 
 
 
@@ -27,7 +27,7 @@ typedef struct {
 }tJogador;
 
 tJogador InicializaJogador(tPonto pontoInicial);
-/*Inicializa o jogador (desneho, simbolo e etc) a partir de um ponto inicial */
+/*Inicializa o jogador (desenho, simbolo e etc) a partir de um ponto inicial */
 
 
 
@@ -56,7 +56,7 @@ tMapa AtualizaMapa(tMapa mapa);
 tMapa DesenhaGridVazioNoMapa(tMapa mapa);
 /*Imprime no grid do mapa o grid vazio (apaga tudo)*/
 
-tMapa DesenheaJogadorNoMapa(tMapa mapa, tJogador jogador);
+tMapa DesenhaJogadorNoMapa(tMapa mapa, tJogador jogador);
 /*Imprime o jogador no mapa
 (considera-se que o jogador fornecido nunca ultrapassará as bordas,
 pois essa condição ja é checada na função que movimenta o jogador)*/
@@ -117,8 +117,6 @@ tMapa InicializaMapa(char diretorio[]) {
     return mapa;
 }
 
-
-
 tMapa InicializaGridMapa(tMapa mapa) {
     //inicializando o mapa
     for (int i = 0; i < mapa.altura + 2; i++) {
@@ -159,7 +157,7 @@ tMapa DesenhaGridVazioNoMapa(tMapa mapa) {
     return mapa;
 }
 
-tMapa DesenheaJogadorNoMapa(tMapa mapa, tJogador jogador) {
+tMapa DesenhaJogadorNoMapa(tMapa mapa, tJogador jogador) {
     tPonto posicao = jogador.posicao;
 
     //laço que percorre todas as posições do desenho do jogador
@@ -178,7 +176,7 @@ tMapa DesenheaJogadorNoMapa(tMapa mapa, tJogador jogador) {
 tMapa AtualizaMapa(tMapa mapa) {
     mapa = DesenhaGridVazioNoMapa(mapa);
 
-    mapa = DesenheaJogadorNoMapa(mapa, mapa.jogador);
+    mapa = DesenhaJogadorNoMapa(mapa, mapa.jogador);
 
     return mapa;
 }
