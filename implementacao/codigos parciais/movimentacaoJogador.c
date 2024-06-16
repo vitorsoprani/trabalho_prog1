@@ -65,6 +65,20 @@ int ColunaJogador(tJogador jogador);
 
 
 
+typedef struct {
+    char s;
+
+    int x;
+    int y;
+
+    int estaAtivo;
+}tTiro;
+
+tTiro InicializaTiro();
+
+tTiro EfetuaTiro(tJogador jogdor, tTiro tiro);
+
+
 
 typedef struct {
     char arquivo[TAM_MAX_CAMINHO];
@@ -77,6 +91,8 @@ typedef struct {
     char gridVazio[ALTURA_MAX_MAPA][LARGURA_MAX_MAPA];
 
     tJogador jogador;
+
+    tTiro tiro;
 
     int qtdInimigos;
     tInimigo inimigos[MAX_INIMIGOS];
@@ -120,6 +136,11 @@ tMapa RealizaJogada(tMapa mapa, char jogada);
 
 tMapa MoveJogador(tMapa mapa, tJogador jogador, char movimento);
 /*Realiza o movimwnto fazwndo todas as checagens necessárias*/
+
+tMapa MoveTiro(tMapa mapa, tTiro tiro);
+
+tMapa DesenhaTiroNoMapa(tMapa mapa, tTiro tiro);
+
 
 
 typedef struct {
@@ -183,8 +204,11 @@ tJogo RealizaJogo(tJogo jogo) {
     char jogada;
 
     while (TRUE) {
-        jogo.iteracao++;
         //system("clear");
+
+        jogo.mapa = MoveTiro(jogo.mapa, jogo.mapa.tiro);
+
+        jogo.iteracao++;
 
         scanf("%c", &jogada);
         scanf("%*c");
@@ -228,6 +252,8 @@ tMapa InicializaMapa(char diretorio[]) {
     mapa = AtualizaMapa(mapa, 0);
 
     GeraArquivoInicializacao(mapa, diretorio);
+
+    mapa.tiro = InicializaTiro();
 
     //fechando o arquivo de configuração do mapa
     fclose(mapa.config);
@@ -349,6 +375,10 @@ tMapa AtualizaMapa(tMapa mapa, int iteracao) {
 
     mapa = DesenhaInimigosNoMapa(mapa, iteracao);
 
+    if (mapa.tiro.estaAtivo) {
+        mapa = DesenhaTiroNoMapa(mapa, mapa.tiro);
+    }
+
     return mapa;
 }
 
@@ -385,7 +415,7 @@ tMapa RealizaJogada(tMapa mapa, char jogada) {
     if (jogada == MOV_ESQUERDA || jogada == MOV_DIREITA || jogada == PASSAR_A_VEZ) {
         mapa = MoveJogador(mapa, mapa.jogador, jogada);
     } else if (jogada == ATIRAR) {
-
+        mapa.tiro = EfetuaTiro(mapa.jogador, mapa.tiro);
     } else {
         printf("[ERRO] Jogada nao definida. Suposta jogada: '%c'.\n", jogada);
         exit(1);
@@ -419,6 +449,24 @@ tMapa MoveJogador(tMapa mapa, tJogador jogador, char movimento) {
     return mapa;
 }
 
+tMapa MoveTiro(tMapa mapa, tTiro tiro) {
+    if (tiro.estaAtivo) {
+        if (tiro.y - 1 < 1) {
+            tiro.estaAtivo = FALSE;
+        } else {
+            tiro.y--;
+        }
+    }
+    mapa.tiro = tiro;
+
+    return mapa;
+}
+
+tMapa DesenhaTiroNoMapa(tMapa mapa, tTiro tiro) {
+    mapa.grid[tiro.y][tiro.x] = tiro.s;
+    return mapa;
+}
+
 
 
 tJogador InicializaJogador(FILE* config) {
@@ -448,6 +496,24 @@ int LinhaJogador(tJogador jogador) {
 
 int ColunaJogador(tJogador jogador) {
     return jogador.x;
+}
+
+
+
+tTiro InicializaTiro() {
+    tTiro tiro;
+    tiro.estaAtivo = FALSE;
+    tiro.s = 'o';
+    return tiro;
+}
+
+tTiro EfetuaTiro(tJogador jogador, tTiro tiro) {
+    if (!tiro.estaAtivo) {
+        tiro.estaAtivo = TRUE;
+        tiro.x = jogador.x;
+        tiro.y = jogador.y - 2;
+    }
+    return tiro;
 }
 
 
