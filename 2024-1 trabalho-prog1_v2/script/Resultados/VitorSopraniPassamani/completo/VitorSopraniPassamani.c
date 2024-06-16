@@ -74,6 +74,8 @@ typedef struct {
 tMapa InicializaMapa(char diretorio[]);
 /*Le as informações dos arquivos de configuração e inicializa os valores*/
 
+void GeraArquivoInicializacao(tMapa mapa, char diretorio[]);
+
 tMapa InicializaGridMapa(tMapa mapa);
 /*Inicializa os valores do gridVazio (somente as bordas e espaços em branco)*/
 
@@ -126,8 +128,6 @@ int main(int argc, char* argv[]) {
 
 tMapa InicializaMapa(char diretorio[]) {
     tMapa mapa;
-    char diretorioSaida[TAM_MAX_CAMINHO];
-    FILE* arquivoInicializacao;
 
     //cria o caminho até o arquivo de configuração
     strcpy(mapa.arquivo, diretorio);
@@ -141,11 +141,6 @@ tMapa InicializaMapa(char diretorio[]) {
         exit(1);
     }
 
-    strcpy(diretorioSaida, diretorio);
-    strcat(diretorioSaida, "/saida/inicializacao.txt");
-
-    arquivoInicializacao = fopen(diretorioSaida, "w");
-
     fscanf(mapa.config, "%d %d\n", &mapa.largura, &mapa.altura);
 
     mapa.jogador = InicializaJogador(mapa.config);
@@ -158,6 +153,21 @@ tMapa InicializaMapa(char diretorio[]) {
 
     mapa = AtualizaMapa(mapa);
 
+    GeraArquivoInicializacao(mapa, diretorio);
+
+    //fechando o arquivo de configuração do mapa
+    fclose(mapa.config);
+    return mapa;
+}
+
+void GeraArquivoInicializacao(tMapa mapa, char diretorio[]) {
+    char diretorioSaida[TAM_MAX_CAMINHO];
+    FILE* arquivoInicializacao;
+
+    strcpy(diretorioSaida, diretorio);
+    strcat(diretorioSaida, "/saida/inicializacao.txt");
+    arquivoInicializacao = fopen(diretorioSaida, "w");
+
     //Desenha o mapa em "inicializacao.txt"
 
     for (int i = 0; i < mapa.altura + 2; i++) {
@@ -168,11 +178,8 @@ tMapa InicializaMapa(char diretorio[]) {
     }
 
     fprintf(arquivoInicializacao, "A posicao central do jogador iniciara em (%d %d).", mapa.jogador.x, mapa.jogador.y);
-    fclose(arquivoInicializacao);
 
-    //fechando o arquivo de configuração do mapa
-    fclose(mapa.config);
-    return mapa;
+    fclose(arquivoInicializacao);
 }
 
 tMapa InicializaGridMapa(tMapa mapa) {
