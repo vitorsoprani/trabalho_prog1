@@ -91,7 +91,7 @@ void GeraArquivoInicializacao(tMapa mapa, char diretorio[]);
 tMapa InicializaGridMapa(tMapa mapa);
 /*Inicializa os valores do gridVazio (somente as bordas e espaços em branco)*/
 
-tMapa AtualizaMapa(tMapa mapa);
+tMapa AtualizaMapa(tMapa mapa, int iteracao);
 /*Desenha os "objetos" no mapa seguindo a ordem de prioridade*/
 
 tMapa DesenhaGridVazioNoMapa(tMapa mapa);
@@ -102,12 +102,12 @@ tMapa DesenhaJogadorNoMapa(tMapa mapa, tJogador jogador);
 (considera-se que o jogador fornecido nunca ultrapassará as bordas,
 pois essa condição ja é checada na função que movimenta o jogador)*/
 
-tMapa DesenhaInimigosNoMapa(tMapa mapa);
+tMapa DesenhaInimigosNoMapa(tMapa mapa, int iteracao);
 /*Percorre o vetor de inimigos desenhando cada um deles no mapa
 (considera-se que o jogador fornecido nunca ultrapassará as bordas,
 pois essa condição ja é checada na função que movimenta o jogador)*/
 
-tMapa DesenhaInimigoNoMapa(tMapa mapa, tInimigo inimigo);
+tMapa DesenhaInimigoNoMapa(tMapa mapa, tInimigo inimigo, int iteracao);
 /*Desenha um inimigo no mapa indiviodualmente*/
 
 tMapa InicializaInimigosNoMapa(tMapa mapa, char diretorio[]);
@@ -125,7 +125,7 @@ tMapa MoveJogador(tMapa mapa, tJogador jogador, char movimento);
 typedef struct {
     tMapa mapa;
     int pontos;
-    int iteracoes;
+    int iteracao;
 }tJogo;
 
 tJogo InicializaJogo(char diretorio[]);
@@ -163,6 +163,9 @@ tJogo InicializaJogo(char diretorio[]) {
     tJogo jogo;
     jogo.mapa = InicializaMapa(diretorio);
 
+    jogo.iteracao = 0;
+    jogo.pontos = 0;
+
     return jogo;
 }
 
@@ -180,6 +183,7 @@ tJogo RealizaJogo(tJogo jogo) {
     char jogada;
 
     while (TRUE) {
+        jogo.iteracao++;
         //system("clear");
 
         scanf("%c", &jogada);
@@ -187,7 +191,8 @@ tJogo RealizaJogo(tJogo jogo) {
 
         jogo.mapa = RealizaJogada(jogo.mapa, jogada);
 
-        jogo.mapa = AtualizaMapa(jogo.mapa);
+        jogo.mapa = AtualizaMapa(jogo.mapa, jogo.iteracao);
+        printf("Pontos: %d | Iteracoes: %d\n", jogo.pontos, jogo.iteracao);
         ImprimeMapa(jogo.mapa);
     }
     return jogo;
@@ -220,7 +225,7 @@ tMapa InicializaMapa(char diretorio[]) {
 
     mapa = InicializaInimigosNoMapa(mapa, diretorio);
 
-    mapa = AtualizaMapa(mapa);
+    mapa = AtualizaMapa(mapa, 0);
 
     GeraArquivoInicializacao(mapa, diretorio);
 
@@ -307,18 +312,25 @@ tMapa DesenhaJogadorNoMapa(tMapa mapa, tJogador jogador) {
     return mapa;
 }
 
-tMapa DesenhaInimigosNoMapa(tMapa mapa) {
+tMapa DesenhaInimigosNoMapa(tMapa mapa, int iteracao) {
     for (int i = 0; i < mapa.qtdInimigos; i++) {
-        mapa = DesenhaInimigoNoMapa(mapa, mapa.inimigos[i]);
+        mapa = DesenhaInimigoNoMapa(mapa, mapa.inimigos[i], iteracao);
     }
     return mapa;
 }
 
-tMapa DesenhaInimigoNoMapa(tMapa mapa, tInimigo inimigo) {
+tMapa DesenhaInimigoNoMapa(tMapa mapa, tInimigo inimigo, int iteracao) {
 
     //laço que percorre todas as posições do desenho do inimigo
     int k = -1;
-    int frame = 0;
+    int frame;
+
+    if (inimigo.animado) {
+        frame = iteracao % QTD_FRAMES;
+    } else {
+        frame = 0;
+    }
+
     for (int i = 0; i < TAM_JOGADOR; i++) {
         int l = -1;
         for (int j = 0; j < TAM_JOGADOR; j++) {
@@ -330,12 +342,12 @@ tMapa DesenhaInimigoNoMapa(tMapa mapa, tInimigo inimigo) {
     return mapa;
 }
 
-tMapa AtualizaMapa(tMapa mapa) {
+tMapa AtualizaMapa(tMapa mapa, int iteracao) {
     mapa = DesenhaGridVazioNoMapa(mapa);
 
     mapa = DesenhaJogadorNoMapa(mapa, mapa.jogador);
 
-    mapa = DesenhaInimigosNoMapa(mapa);
+    mapa = DesenhaInimigosNoMapa(mapa, iteracao);
 
     return mapa;
 }
