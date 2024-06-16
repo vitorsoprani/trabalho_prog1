@@ -112,6 +112,16 @@ void ImprimeMapa(tMapa mapa);
 
 
 
+typedef struct {
+    tMapa mapa;
+}tJogo;
+
+tJogo InicializaJogo(char diretorio[]);
+
+
+
+tJogo jogo;
+
 int main(int argc, char* argv[]) {
     //Checa se algum diretorio foi passado
     if (argc < 2) {
@@ -123,11 +133,20 @@ int main(int argc, char* argv[]) {
     char diretorio[TAM_MAX_CAMINHO];
     strcpy(diretorio, argv[1]);
 
-    tMapa mapa = InicializaMapa(diretorio);
+    jogo = InicializaJogo(diretorio);
 
-    ImprimeMapa(mapa);
+    ImprimeMapa(jogo.mapa);
 
     return 0;
+}
+
+
+
+tJogo InicializaJogo(char diretorio[]) {
+    tJogo jogo;
+    jogo.mapa = InicializaMapa(diretorio);
+
+    return jogo;
 }
 
 

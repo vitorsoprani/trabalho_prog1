@@ -12,6 +12,11 @@
 #define QTD_FILEIRAS        3
 #define MAX_INIMIGOS        100     //Qtd maxima de inimigos possiveis, tendo 3 fileiras e largura maxima 100
 
+#define MOV_ESQUERDA        'a'
+#define MOV_DIREITA         'd'
+#define ATIRAR              ' '
+#define PASSAR_A_VEZ        's'
+
 #define TAM_JOGADOR         3
 
 #define TAM_INIMIGO         3
@@ -57,6 +62,7 @@ int LinhaJogador(tJogador jogador);
 
 int ColunaJogador(tJogador jogador);
 /*Retorna a coluna do jogador*/
+
 
 
 
@@ -110,13 +116,23 @@ tMapa InicializaInimigosNoMapa(tMapa mapa, char diretorio[]);
 void ImprimeMapa(tMapa mapa);
 /*Imprime o mapa*/
 
+tMapa RealizaJogada(tMapa mapa, char jogada);
+
+tMapa MoveJogador(tMapa mapa, tJogador jogador, char movimento);
+/*Realiza o movimwnto fazwndo todas as checagens necessárias*/
 
 
 typedef struct {
     tMapa mapa;
+    int pontos;
+    int iteracoes;
 }tJogo;
 
 tJogo InicializaJogo(char diretorio[]);
+/*Faz as devidas inicializações e gera o arquivo*/
+
+tJogo RealizaJogo(tJogo jogo);
+/*Loop principal  do jogo*/
 
 
 
@@ -134,6 +150,7 @@ int main(int argc, char* argv[]) {
     strcpy(diretorio, argv[1]);
 
     jogo = InicializaJogo(diretorio);
+    jogo = RealizaJogo(jogo);
 
     ImprimeMapa(jogo.mapa);
 
@@ -146,6 +163,33 @@ tJogo InicializaJogo(char diretorio[]) {
     tJogo jogo;
     jogo.mapa = InicializaMapa(diretorio);
 
+    return jogo;
+}
+
+tJogo RealizaJogo(tJogo jogo) {
+    /*
+        #Verifica condiçõesa de vitoria/derrota;
+        #Verifica colisao do tiro com o inimigo;
+        #Move inimigos;
+        #Move tiro (caso atinja a borda, desabilita-lo);
+        #incrementar contador de iterações (inicia em 0);
+        #Ler joagda do usuário, (w a s d ou ' '), se o jogador for ultrapassar a borda ele não deve ser movido
+            e só deve ser efetuado um novo disparo caso não haja tiros ativos no mapa.
+        #imprimir na saída padrão os pontos, as iterações e o mapa;
+    */
+    char jogada;
+
+    while (TRUE) {
+        //system("clear");
+
+        scanf("%c", &jogada);
+        scanf("%*c");
+
+        jogo.mapa = RealizaJogada(jogo.mapa, jogada);
+
+        jogo.mapa = AtualizaMapa(jogo.mapa);
+        ImprimeMapa(jogo.mapa);
+    }
     return jogo;
 }
 
@@ -321,6 +365,44 @@ tMapa InicializaInimigosNoMapa(tMapa mapa, char diretorio[]) {
             }
         }
     }
+
+    return mapa;
+}
+
+tMapa RealizaJogada(tMapa mapa, char jogada) {
+    if (jogada == MOV_ESQUERDA || jogada == MOV_DIREITA || jogada == PASSAR_A_VEZ) {
+        mapa = MoveJogador(mapa, mapa.jogador, jogada);
+    } else if (jogada == ATIRAR) {
+
+    } else {
+        printf("[ERRO] Jogada nao definida. Suposta jogada: '%c'.\n", jogada);
+        exit(1);
+    }
+
+    return mapa;
+}
+
+tMapa MoveJogador(tMapa mapa, tJogador jogador, char movimento) {
+    if (movimento == MOV_ESQUERDA) {
+        if (jogador.x - 2 > 0) {
+            jogador.x--;
+        } else {
+            printf("Colidiu na parede esquerda!!!\n");
+        }
+    } else if (movimento == MOV_DIREITA) {
+        if (jogador.x + 2 < mapa.largura) {
+            jogador.x++;
+        } else {
+            printf("Colidiu na parede direita!!!\n");
+        }
+    } else if (movimento == PASSAR_A_VEZ) {
+        printf("Passou a vez! \n");
+    } else {
+        printf("[ERRO NAO IDENTIFICADO] Em MoveJogador(). Suposto movimento: %c", movimento);
+        exit(1);
+    }
+
+    mapa.jogador = jogador;
 
     return mapa;
 }
