@@ -52,6 +52,12 @@ typedef struct {
 tJogador InicializaJogador(FILE* config);
 /*Inicializa o jogador (desenho, simbolo e etc) a partir de um arquivo de configuração*/
 
+int LinhaJogador(tJogador jogador);
+/*Retorna a linha do jogador*/
+
+int ColunaJogador(tJogador jogador);
+/*Retorna a coluna do jogador*/
+
 
 
 typedef struct {
@@ -145,7 +151,7 @@ tMapa InicializaMapa(char diretorio[]) {
 
     mapa.jogador = InicializaJogador(mapa.config);
 
-    mapa.alturaMaximaInimigo = mapa.jogador.y - 2;
+    mapa.alturaMaximaInimigo = LinhaJogador(mapa.jogador) - 2;
 
     mapa = InicializaGridMapa(mapa);
 
@@ -177,7 +183,8 @@ void GeraArquivoInicializacao(tMapa mapa, char diretorio[]) {
         fprintf(arquivoInicializacao, "\n");
     }
 
-    fprintf(arquivoInicializacao, "A posicao central do jogador iniciara em (%d %d).", mapa.jogador.x, mapa.jogador.y);
+    fprintf(arquivoInicializacao, "A posicao central do jogador iniciara em (%d %d).",
+        ColunaJogador(mapa.jogador), LinhaJogador(mapa.jogador));
 
     fclose(arquivoInicializacao);
 }
@@ -320,6 +327,14 @@ tJogador InicializaJogador(FILE* config) {
     }
 
     return jogador;
+}
+
+int LinhaJogador(tJogador jogador) {
+    return jogador.y;
+}
+
+int ColunaJogador(tJogador jogador) {
+    return jogador.x;
 }
 
 
