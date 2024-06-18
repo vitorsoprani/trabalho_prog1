@@ -103,8 +103,6 @@ tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo);
 
 void ImprimeTela(tGrid tela);
 
-tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa);
-
 int Largura(tGrid grid);
 
 
@@ -129,6 +127,8 @@ typedef struct {
 
 /*Faz as devidas inicializações e gera o codigo*/
 tJogo InicializaJogo(char diretorio[]);
+
+tJogo DesenhaMapaNaTela(tJogo jogo, tGrid tela, tGrid mapa);
 
 /*Não são checados casos de sobreposição nem colisões.
 Considera-se que essas verificações são feitas na função de movimentar o jogador*/
@@ -224,8 +224,21 @@ tJogo InicializaJogo(char diretorio[]) {
     return jogo;
 }
 
+tJogo DesenhaMapaNaTela(tJogo jogo, tGrid tela, tGrid mapa) {
+
+    for (int i = 0; i < tela.altura + 2; i++) {
+        for (int j = 0; j < tela.largura + 2; j++) {
+            tela.grid[i][j] = mapa.grid[i][j];
+        }
+    }
+
+    jogo.tela = tela;
+
+    return jogo;
+}
+
 tJogo AtualizaTela(tJogo jogo) {
-    jogo.tela = DesenhaMapaNaTela(jogo.tela, jogo.mapa);
+    jogo = DesenhaMapaNaTela(jogo, jogo.tela, jogo.mapa);
 
     jogo = DesenhaJogadorNaTela(jogo, jogo.tela, jogo.jogador);
 
@@ -465,17 +478,6 @@ void ImprimeTela(tGrid tela) {
         }
         printf("\n");
     }
-}
-
-tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa) {
-
-    for (int i = 0; i < tela.altura + 2; i++) {
-        for (int j = 0; j < tela.largura + 2; j++) {
-            tela.grid[i][j] = mapa.grid[i][j];
-        }
-    }
-
-    return tela;
 }
 
 int Largura(tGrid grid) {

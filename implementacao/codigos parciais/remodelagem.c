@@ -29,19 +29,6 @@
 
 
 typedef struct {
-    char s;
-
-    int x;
-    int y;
-
-    int estaAtivo;
-}tTiro;
-
-
-
-
-
-typedef struct {
     char arquivo[TAM_MAX_CAMINHO];
     FILE* config;
 
@@ -71,6 +58,23 @@ tInimigo LeFramesInimigo(tInimigo inimigo);
 
 
 typedef struct {
+    int largura;
+    int altura;
+    char grid[ALTURA_MAX_MAPA][LARGURA_MAX_MAPA];
+}tGrid;
+
+/*Cria o desenho do mapa*/
+tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo);
+
+void ImprimeTela(tGrid tela);
+
+int Largura(tGrid grid);
+
+
+
+
+
+typedef struct {
     int x;
     int y;
 
@@ -87,25 +91,26 @@ int LinhaJogador(tJogador jogador);
 /*Retorna a coluna do jogador*/
 int ColunaJogador(tJogador jogador);
 
-tJogador MoveJogador(int larguraMapa, tJogador jogador, char movimento);
+tJogador MoveJogador(tGrid mapa, tJogador jogador, char movimento);
+
 
 
 
 
 typedef struct {
-    int largura;
-    int altura;
-    char grid[ALTURA_MAX_MAPA][LARGURA_MAX_MAPA];
-}tGrid;
+    char s;
 
-/*Cria o desenho do mapa*/
-tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo);
+    int x;
+    int y;
 
-void ImprimeTela(tGrid tela);
+    int estaAtivo;
+}tTiro;
 
-tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa);
+tTiro InicializaTiro();
 
-int Largura(tGrid grid);
+tTiro EfetuaTiro(tJogador jogador, tTiro tiro);
+
+tTiro MoveTiro(tTiro tiro);
 
 
 
@@ -130,6 +135,10 @@ typedef struct {
 /*Faz as devidas inicializações e gera o codigo*/
 tJogo InicializaJogo(char diretorio[]);
 
+tJogo DesenhaMapaNaTela(tJogo jogo, tGrid tela, tGrid mapa);
+
+tJogo DesenhaTiroNaTela(tJogo jogo, tGrid tela, tTiro tiro);
+
 /*Não são checados casos de sobreposição nem colisões.
 Considera-se que essas verificações são feitas na função de movimentar o jogador*/
 tJogo DesenhaJogadorNaTela(tJogo jogo, tGrid tela, tJogador jogador);
@@ -143,6 +152,8 @@ void GeraArquivoInicializacao(tGrid tela, tJogador jogador, char diretorio[]);
 tJogo RealizaJogo(tJogo jogo);
 
 tJogo RealizaJogada(tJogo jogo, char jogada);
+
+
 
 
 
@@ -161,7 +172,7 @@ int main(int argc, char* argv[]) {
 
     jogo = InicializaJogo(diretorio);
 
-    //jogo = RealizaJogo(jogo);
+    jogo = RealizaJogo(jogo);
 
     return 0;
 }
@@ -215,6 +226,8 @@ tJogo InicializaJogo(char diretorio[]) {
     if (MODO_DEBUG) printf("->Todos inmigos inicializados.\n");
     //    jogo.tiro = InicializaTiro();
 
+    jogo.tiro = InicializaTiro();
+
     jogo = AtualizaTela(jogo);
     if (MODO_DEBUG) printf("->Tela Atualizada\n");
 
@@ -224,12 +237,38 @@ tJogo InicializaJogo(char diretorio[]) {
     return jogo;
 }
 
+tJogo DesenhaMapaNaTela(tJogo jogo, tGrid tela, tGrid mapa) {
+
+    for (int i = 0; i < tela.altura + 2; i++) {
+        for (int j = 0; j < tela.largura + 2; j++) {
+            tela.grid[i][j] = mapa.grid[i][j];
+        }
+    }
+
+    jogo.tela = tela;
+
+    return jogo;
+}
+
 tJogo AtualizaTela(tJogo jogo) {
-    jogo.tela = DesenhaMapaNaTela(jogo.tela, jogo.mapa);
+    jogo = DesenhaMapaNaTela(jogo, jogo.tela, jogo.mapa);
 
     jogo = DesenhaJogadorNaTela(jogo, jogo.tela, jogo.jogador);
 
     jogo = DesenhaInimigosNaTela(jogo, jogo.tela, jogo.inimigos);
+
+    jogo = DesenhaTiroNaTela(jogo, jogo.tela, jogo.tiro);
+
+    return jogo;
+}
+
+tJogo DesenhaTiroNaTela(tJogo jogo, tGrid tela, tTiro tiro) {
+
+    if (tiro.estaAtivo) {
+        tela.grid[tiro.y][tiro.x] = tiro.s;
+    }
+
+    jogo.tela = tela;
 
     return jogo;
 }
@@ -336,7 +375,7 @@ tJogo RealizaJogo(tJogo jogo) {
 
         //move inimigos
 
-        //move tiro
+        jogo.tiro = MoveTiro(jogo.tiro);
 
         jogo.iteracao++;
 
@@ -351,9 +390,9 @@ tJogo RealizaJogo(tJogo jogo) {
 
 tJogo RealizaJogada(tJogo jogo, char jogada) {
     if (jogada == MOV_ESQUERDA || jogada == MOV_DIREITA || jogada == PASSAR_A_VEZ) {
-        jogo.jogador = MoveJogador(Largura(jogo.mapa), jogo.jogador, jogada);
+        jogo.jogador = MoveJogador(jogo.mapa, jogo.jogador, jogada);
     } else if (jogada == ATIRAR) {
-        //jogo.tiro = EfetuaTiro(jogo.jogador, jogo.tiro);
+        jogo.tiro = EfetuaTiro(jogo.jogador, jogo.tiro);
     } else {
         printf("[ERRO] Jogada nao definida. Suposta jogada: '%c'.\n", jogada);
         exit(1);
@@ -407,14 +446,14 @@ int ColunaJogador(tJogador jogador) {
     return jogador.x;
 }
 
-tJogador MoveJogador(int larguraMapa, tJogador jogador, char movimento) {
+tJogador MoveJogador(tGrid mapa, tJogador jogador, char movimento) {
     if (movimento == MOV_ESQUERDA) {
         if (jogador.x - 2 > 0) {
             jogador.x--;
         } else {
         }
     } else if (movimento == MOV_DIREITA) {
-        if (jogador.x + 2 < larguraMapa) {
+        if (jogador.x + 2 < mapa.largura) {
             jogador.x++;
         } else {
         }
@@ -465,17 +504,6 @@ void ImprimeTela(tGrid tela) {
         }
         printf("\n");
     }
-}
-
-tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa) {
-
-    for (int i = 0; i < tela.altura + 2; i++) {
-        for (int j = 0; j < tela.largura + 2; j++) {
-            tela.grid[i][j] = mapa.grid[i][j];
-        }
-    }
-
-    return tela;
 }
 
 int Largura(tGrid grid) {
@@ -577,4 +605,34 @@ tInimigo LeFramesInimigo(tInimigo inimigo) {
 
     fclose(inimigo.config);
     return inimigo;
+}
+
+
+
+
+
+tTiro InicializaTiro() {
+    tTiro tiro;
+    tiro.s = 'o';
+    tiro.estaAtivo = FALSE;
+
+    return tiro;
+}
+
+tTiro EfetuaTiro(tJogador jogador, tTiro tiro) {
+    if (!tiro.estaAtivo) {
+        tiro.estaAtivo = TRUE;
+        tiro.x = jogador.x;
+        tiro.y = jogador.y - 2;
+    }
+    return tiro;
+}
+
+tTiro MoveTiro(tTiro tiro) {
+    if (tiro.y - 1 < 1) {
+        tiro.estaAtivo = FALSE;
+    } else {
+        tiro.y--;
+    }
+    return tiro;
 }
