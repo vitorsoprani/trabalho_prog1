@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MODO_DEBUG          1
+#define MODO_DEBUG          0
 
 #define TRUE                1
 #define FALSE               0
@@ -26,6 +26,8 @@
 
 
 
+
+
 typedef struct {
     char s;
 
@@ -34,6 +36,8 @@ typedef struct {
 
     int estaAtivo;
 }tTiro;
+
+
 
 
 
@@ -64,6 +68,8 @@ tInimigo LeFramesInimigo(tInimigo inimigo);
 
 
 
+
+
 typedef struct {
     int x;
     int y;
@@ -81,6 +87,9 @@ int LinhaJogador(tJogador jogador);
 /*Retorna a coluna do jogador*/
 int ColunaJogador(tJogador jogador);
 
+tJogador MoveJogador(int larguraMapa, tJogador jogador, char movimento);
+
+
 
 
 typedef struct {
@@ -94,13 +103,11 @@ tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo);
 
 void ImprimeTela(tGrid tela);
 
-/*Não são checados casos de sobreposição nem colisões.
-Considera-se que essas verificações são feitas na função de movimentar o jogador*/
-tGrid DesenhaJogadorNaTela(tGrid tela, tJogador jogador);
-
-tGrid DesenhaInimigosNaTela(tGrid tela, tInimigo inimigos[], int qtdInimigos, int iteracao);
-
 tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa);
+
+int Largura(tGrid grid);
+
+
 
 
 
@@ -123,9 +130,19 @@ typedef struct {
 /*Faz as devidas inicializações e gera o codigo*/
 tJogo InicializaJogo(char diretorio[]);
 
+/*Não são checados casos de sobreposição nem colisões.
+Considera-se que essas verificações são feitas na função de movimentar o jogador*/
+tJogo DesenhaJogadorNaTela(tJogo jogo, tGrid tela, tJogador jogador);
+
+tJogo DesenhaInimigosNaTela(tJogo jogo, tGrid tela, tInimigo inimigos[]);
+
 tJogo AtualizaTela(tJogo jogo);
 
 void GeraArquivoInicializacao(tGrid tela, tJogador jogador, char diretorio[]);
+
+tJogo RealizaJogo(tJogo jogo);
+
+tJogo RealizaJogada(tJogo jogo, char jogada);
 
 
 
@@ -144,8 +161,12 @@ int main(int argc, char* argv[]) {
 
     jogo = InicializaJogo(diretorio);
 
+    //jogo = RealizaJogo(jogo);
+
     return 0;
 }
+
+
 
 
 
@@ -199,8 +220,6 @@ tJogo InicializaJogo(char diretorio[]) {
 
     GeraArquivoInicializacao(jogo.tela, jogo.jogador, diretorio);
 
-    ImprimeTela(jogo.tela);
-
     fclose(mapa_txt);
     return jogo;
 }
@@ -208,9 +227,62 @@ tJogo InicializaJogo(char diretorio[]) {
 tJogo AtualizaTela(tJogo jogo) {
     jogo.tela = DesenhaMapaNaTela(jogo.tela, jogo.mapa);
 
-    jogo.tela = DesenhaJogadorNaTela(jogo.tela, jogo.jogador);
+    jogo = DesenhaJogadorNaTela(jogo, jogo.tela, jogo.jogador);
 
-    jogo.tela = DesenhaInimigosNaTela(jogo.tela, jogo.inimigos, jogo.qtdInimigos, jogo.iteracao);
+    jogo = DesenhaInimigosNaTela(jogo, jogo.tela, jogo.inimigos);
+
+    return jogo;
+}
+
+tJogo DesenhaJogadorNaTela(tJogo jogo, tGrid tela, tJogador jogador) {
+    //laço que percorre todas as posições do desenho do jogador
+    int k = -1;
+    for (int i = 0; i < TAM_JOGADOR; i++) {
+        int l = -1;
+        for (int j = 0; j < TAM_JOGADOR; j++) {
+            tela.grid[jogador.y + k][jogador.x + l] = jogador.desenho[i][j];
+            l++;
+        }
+        k++;
+    }
+
+    if (MODO_DEBUG) printf("->Jogador desenhado no grid da tela.\n");
+
+    jogo.tela = tela;
+
+    return jogo;
+}
+
+tJogo DesenhaInimigosNaTela(tJogo jogo, tGrid tela, tInimigo inimigos[]) {
+    //laço que percorre todos os inimigos do vetor
+    for (int x = 0; x < jogo.qtdInimigos; x++) {
+        if (inimigos[x].estaVivo) {
+            //laço que percorre todas as posições do desenho do inimigo
+            int k = -1;
+            int frame;
+
+            if (inimigos[x].animado) {
+                frame = jogo.iteracao % QTD_FRAMES;
+            } else {
+                frame = 0;
+            }
+
+            for (int i = 0; i < TAM_INIMIGO; i++) {
+                int l = -1;
+                for (int j = 0; j < TAM_INIMIGO; j++) {
+                    tela.grid[inimigos[x].y + k][inimigos[x].x + l] = inimigos[x].frames[frame][i][j];
+                    l++;
+                }
+                k++;
+            }
+            if (MODO_DEBUG) {
+                printf("->Inimigo %d desenhado no grid da tela:\n", x);
+                ImprimeTela(tela);
+            }
+        }
+    }
+
+    jogo.tela = tela;
 
     return jogo;
 }
@@ -238,6 +310,58 @@ void GeraArquivoInicializacao(tGrid tela, tJogador jogador, char diretorio[]) {
 
     fclose(arquivoInicializacao);
 }
+
+tJogo RealizaJogo(tJogo jogo) {
+    /*
+        #Verifica condiçõesa de vitoria/derrota;
+        #Verifica colisao do tiro com o inimigo;
+        #Move inimigos;
+        #Move tiro (caso atinja a borda, desabilita-lo);
+        #incrementar contador de iterações (inicia em 0);
+        #Ler joagda do usuário, (w a s d ou ' '), se o jogador for ultrapassar a borda ele não deve ser movido
+            e só deve ser efetuado um novo disparo caso não haja tiros ativos no mapa.
+        #imprimir na saída padrão os pontos, as iterações e o mapa;
+    */
+    char jogada;
+
+    while (TRUE) {
+        system("clear");
+        jogo = AtualizaTela(jogo);
+        printf("Pontos: %d | Iteracoes: %d\n", jogo.pontos, jogo.iteracao);
+        ImprimeTela(jogo.tela);
+
+        //verifica vitoria/derrota
+
+        //verifica morte de inimigos
+
+        //move inimigos
+
+        //move tiro
+
+        jogo.iteracao++;
+
+        scanf("%c", &jogada);
+        scanf("%*c");
+
+        jogo = RealizaJogada(jogo, jogada);
+    }
+
+    return jogo;
+}
+
+tJogo RealizaJogada(tJogo jogo, char jogada) {
+    if (jogada == MOV_ESQUERDA || jogada == MOV_DIREITA || jogada == PASSAR_A_VEZ) {
+        jogo.jogador = MoveJogador(Largura(jogo.mapa), jogo.jogador, jogada);
+    } else if (jogada == ATIRAR) {
+        //jogo.tiro = EfetuaTiro(jogo.jogador, jogo.tiro);
+    } else {
+        printf("[ERRO] Jogada nao definida. Suposta jogada: '%c'.\n", jogada);
+        exit(1);
+    }
+
+    return jogo;
+}
+
 
 
 
@@ -283,6 +407,28 @@ int ColunaJogador(tJogador jogador) {
     return jogador.x;
 }
 
+tJogador MoveJogador(int larguraMapa, tJogador jogador, char movimento) {
+    if (movimento == MOV_ESQUERDA) {
+        if (jogador.x - 2 > 0) {
+            jogador.x--;
+        } else {
+        }
+    } else if (movimento == MOV_DIREITA) {
+        if (jogador.x + 2 < larguraMapa) {
+            jogador.x++;
+        } else {
+        }
+    } else if (movimento == PASSAR_A_VEZ) {
+        printf("Passou a vez! \n");
+    } else {
+        printf("[ERRO NAO IDENTIFICADO] Em MoveJogador(). Suposto movimento: %c", movimento);
+        exit(1);
+    }
+    return jogador;
+}
+
+
+
 
 
 tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo) {
@@ -312,23 +458,6 @@ tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo) {
     return mapa;
 }
 
-tGrid DesenhaJogadorNaTela(tGrid tela, tJogador jogador) {
-    //laço que percorre todas as posições do desenho do jogador
-    int k = -1;
-    for (int i = 0; i < TAM_JOGADOR; i++) {
-        int l = -1;
-        for (int j = 0; j < TAM_JOGADOR; j++) {
-            tela.grid[jogador.y + k][jogador.x + l] = jogador.desenho[i][j];
-            l++;
-        }
-        k++;
-    }
-
-    if (MODO_DEBUG) printf("->Jogador desenhado no grid da tela.\n");
-
-    return tela;
-}
-
 void ImprimeTela(tGrid tela) {
     for (int i = 0; i < tela.altura + 2; i++) {
         for (int j = 0; j < tela.largura + 2; j++) {
@@ -336,38 +465,6 @@ void ImprimeTela(tGrid tela) {
         }
         printf("\n");
     }
-}
-
-tGrid DesenhaInimigosNaTela(tGrid tela, tInimigo inimigos[], int qtdInimigos, int iteracao) {
-    //laço que percorre todos os inimigos do vetor
-    for (int x = 0; x < qtdInimigos; x++) {
-        if (inimigos[x].estaVivo) {
-            //laço que percorre todas as posições do desenho do inimigo
-            int k = -1;
-            int frame;
-
-            if (inimigos[x].animado) {
-                frame = iteracao % QTD_FRAMES;
-            } else {
-                frame = 0;
-            }
-
-            for (int i = 0; i < TAM_INIMIGO; i++) {
-                int l = -1;
-                for (int j = 0; j < TAM_INIMIGO; j++) {
-                    tela.grid[inimigos[x].y + k][inimigos[x].x + l] = inimigos[x].frames[frame][i][j];
-                    l++;
-                }
-                k++;
-            }
-            if (MODO_DEBUG) {
-                printf("->Inimigo %d desenhado no grid da tela:\n", x);
-                ImprimeTela(tela);
-            }
-        }
-    }
-
-    return tela;
 }
 
 tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa) {
@@ -380,6 +477,11 @@ tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa) {
 
     return tela;
 }
+
+int Largura(tGrid grid) {
+    return grid.largura;
+}
+
 
 
 

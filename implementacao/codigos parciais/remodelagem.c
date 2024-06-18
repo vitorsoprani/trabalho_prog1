@@ -103,10 +103,6 @@ tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo);
 
 void ImprimeTela(tGrid tela);
 
-
-
-tGrid DesenhaInimigosNaTela(tGrid tela, tInimigo inimigos[], int qtdInimigos, int iteracao);
-
 tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa);
 
 int Largura(tGrid grid);
@@ -138,6 +134,8 @@ tJogo InicializaJogo(char diretorio[]);
 Considera-se que essas verificações são feitas na função de movimentar o jogador*/
 tJogo DesenhaJogadorNaTela(tJogo jogo, tGrid tela, tJogador jogador);
 
+tJogo DesenhaInimigosNaTela(tJogo jogo, tGrid tela, tInimigo inimigos[]);
+
 tJogo AtualizaTela(tJogo jogo);
 
 void GeraArquivoInicializacao(tGrid tela, tJogador jogador, char diretorio[]);
@@ -163,7 +161,7 @@ int main(int argc, char* argv[]) {
 
     jogo = InicializaJogo(diretorio);
 
-    jogo = RealizaJogo(jogo);
+    //jogo = RealizaJogo(jogo);
 
     return 0;
 }
@@ -231,7 +229,7 @@ tJogo AtualizaTela(tJogo jogo) {
 
     jogo = DesenhaJogadorNaTela(jogo, jogo.tela, jogo.jogador);
 
-    jogo.tela = DesenhaInimigosNaTela(jogo.tela, jogo.inimigos, jogo.qtdInimigos, jogo.iteracao);
+    jogo = DesenhaInimigosNaTela(jogo, jogo.tela, jogo.inimigos);
 
     return jogo;
 }
@@ -249,6 +247,40 @@ tJogo DesenhaJogadorNaTela(tJogo jogo, tGrid tela, tJogador jogador) {
     }
 
     if (MODO_DEBUG) printf("->Jogador desenhado no grid da tela.\n");
+
+    jogo.tela = tela;
+
+    return jogo;
+}
+
+tJogo DesenhaInimigosNaTela(tJogo jogo, tGrid tela, tInimigo inimigos[]) {
+    //laço que percorre todos os inimigos do vetor
+    for (int x = 0; x < jogo.qtdInimigos; x++) {
+        if (inimigos[x].estaVivo) {
+            //laço que percorre todas as posições do desenho do inimigo
+            int k = -1;
+            int frame;
+
+            if (inimigos[x].animado) {
+                frame = jogo.iteracao % QTD_FRAMES;
+            } else {
+                frame = 0;
+            }
+
+            for (int i = 0; i < TAM_INIMIGO; i++) {
+                int l = -1;
+                for (int j = 0; j < TAM_INIMIGO; j++) {
+                    tela.grid[inimigos[x].y + k][inimigos[x].x + l] = inimigos[x].frames[frame][i][j];
+                    l++;
+                }
+                k++;
+            }
+            if (MODO_DEBUG) {
+                printf("->Inimigo %d desenhado no grid da tela:\n", x);
+                ImprimeTela(tela);
+            }
+        }
+    }
 
     jogo.tela = tela;
 
@@ -426,8 +458,6 @@ tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo) {
     return mapa;
 }
 
-
-
 void ImprimeTela(tGrid tela) {
     for (int i = 0; i < tela.altura + 2; i++) {
         for (int j = 0; j < tela.largura + 2; j++) {
@@ -435,38 +465,6 @@ void ImprimeTela(tGrid tela) {
         }
         printf("\n");
     }
-}
-
-tGrid DesenhaInimigosNaTela(tGrid tela, tInimigo inimigos[], int qtdInimigos, int iteracao) {
-    //laço que percorre todos os inimigos do vetor
-    for (int x = 0; x < qtdInimigos; x++) {
-        if (inimigos[x].estaVivo) {
-            //laço que percorre todas as posições do desenho do inimigo
-            int k = -1;
-            int frame;
-
-            if (inimigos[x].animado) {
-                frame = iteracao % QTD_FRAMES;
-            } else {
-                frame = 0;
-            }
-
-            for (int i = 0; i < TAM_INIMIGO; i++) {
-                int l = -1;
-                for (int j = 0; j < TAM_INIMIGO; j++) {
-                    tela.grid[inimigos[x].y + k][inimigos[x].x + l] = inimigos[x].frames[frame][i][j];
-                    l++;
-                }
-                k++;
-            }
-            if (MODO_DEBUG) {
-                printf("->Inimigo %d desenhado no grid da tela:\n", x);
-                ImprimeTela(tela);
-            }
-        }
-    }
-
-    return tela;
 }
 
 tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa) {
