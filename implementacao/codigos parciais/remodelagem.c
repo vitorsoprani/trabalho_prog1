@@ -103,9 +103,7 @@ tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo);
 
 void ImprimeTela(tGrid tela);
 
-/*Não são checados casos de sobreposição nem colisões.
-Considera-se que essas verificações são feitas na função de movimentar o jogador*/
-tGrid DesenhaJogadorNaTela(tGrid tela, tJogador jogador);
+
 
 tGrid DesenhaInimigosNaTela(tGrid tela, tInimigo inimigos[], int qtdInimigos, int iteracao);
 
@@ -135,6 +133,10 @@ typedef struct {
 
 /*Faz as devidas inicializações e gera o codigo*/
 tJogo InicializaJogo(char diretorio[]);
+
+/*Não são checados casos de sobreposição nem colisões.
+Considera-se que essas verificações são feitas na função de movimentar o jogador*/
+tJogo DesenhaJogadorNaTela(tJogo jogo, tGrid tela, tJogador jogador);
 
 tJogo AtualizaTela(tJogo jogo);
 
@@ -227,9 +229,28 @@ tJogo InicializaJogo(char diretorio[]) {
 tJogo AtualizaTela(tJogo jogo) {
     jogo.tela = DesenhaMapaNaTela(jogo.tela, jogo.mapa);
 
-    jogo.tela = DesenhaJogadorNaTela(jogo.tela, jogo.jogador);
+    jogo = DesenhaJogadorNaTela(jogo, jogo.tela, jogo.jogador);
 
     jogo.tela = DesenhaInimigosNaTela(jogo.tela, jogo.inimigos, jogo.qtdInimigos, jogo.iteracao);
+
+    return jogo;
+}
+
+tJogo DesenhaJogadorNaTela(tJogo jogo, tGrid tela, tJogador jogador) {
+    //laço que percorre todas as posições do desenho do jogador
+    int k = -1;
+    for (int i = 0; i < TAM_JOGADOR; i++) {
+        int l = -1;
+        for (int j = 0; j < TAM_JOGADOR; j++) {
+            tela.grid[jogador.y + k][jogador.x + l] = jogador.desenho[i][j];
+            l++;
+        }
+        k++;
+    }
+
+    if (MODO_DEBUG) printf("->Jogador desenhado no grid da tela.\n");
+
+    jogo.tela = tela;
 
     return jogo;
 }
@@ -405,22 +426,7 @@ tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo) {
     return mapa;
 }
 
-tGrid DesenhaJogadorNaTela(tGrid tela, tJogador jogador) {
-    //laço que percorre todas as posições do desenho do jogador
-    int k = -1;
-    for (int i = 0; i < TAM_JOGADOR; i++) {
-        int l = -1;
-        for (int j = 0; j < TAM_JOGADOR; j++) {
-            tela.grid[jogador.y + k][jogador.x + l] = jogador.desenho[i][j];
-            l++;
-        }
-        k++;
-    }
 
-    if (MODO_DEBUG) printf("->Jogador desenhado no grid da tela.\n");
-
-    return tela;
-}
 
 void ImprimeTela(tGrid tela) {
     for (int i = 0; i < tela.altura + 2; i++) {
