@@ -429,13 +429,11 @@ tMapa MoveJogador(tMapa mapa, tJogador jogador, char movimento) {
         if (jogador.x - 2 > 0) {
             jogador.x--;
         } else {
-            printf("Colidiu na parede esquerda!!!\n");
         }
     } else if (movimento == MOV_DIREITA) {
         if (jogador.x + 2 < mapa.largura) {
             jogador.x++;
         } else {
-            printf("Colidiu na parede direita!!!\n");
         }
     } else if (movimento == PASSAR_A_VEZ) {
         printf("Passou a vez! \n");

@@ -1,3 +1,16 @@
+->Largua e altura do mapa: 26 11.
+->Posicao incial do jogador: (2 10)
+->Desenho do Jogador:
+	M M
+	MMM
+	MMM
+->Jogador inicializado.
+->Mapa inicializado.
+->Tela Inicializada.
+->Todos inmigos inicializados.
+->Jogador desenhado no grid da tela.
+->Tela Atualizada
+->inicializacao.txt criado.
 +--------------------------+
 |                          |
 |                          |

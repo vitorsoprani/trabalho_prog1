@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MODO_DEBUG          1
+
 #define TRUE                1
 #define FALSE               0
 
@@ -12,10 +14,27 @@
 #define QTD_FILEIRAS        3
 #define MAX_INIMIGOS        100     //Qtd maxima de inimigos possiveis, tendo 3 fileiras e largura maxima 100
 
+#define MOV_ESQUERDA        'a'
+#define MOV_DIREITA         'd'
+#define ATIRAR              ' '
+#define PASSAR_A_VEZ        's'
+
 #define TAM_JOGADOR         3
 
 #define TAM_INIMIGO         3
 #define QTD_FRAMES          3
+
+
+
+typedef struct {
+    char s;
+
+    int x;
+    int y;
+
+    int estaAtivo;
+}tTiro;
+
 
 
 typedef struct {
@@ -34,11 +53,15 @@ typedef struct {
     int indice;
 }tInimigo;
 
-tInimigo InicializaInimigo(FILE* configMapa, char diretorio[], int fileira, int indice);
-/*Inicializa o inimigo (posição, animação e etc) a partir de um arquivo de configuração*/
+/*Inicializa cada inimigo no vetor de inimigos e retorna a quantidade de inimigos*/
+int InicializaInimigos(tInimigo inimigos[], FILE* mapa_txt, char diretorio[]);
 
+/*Gera as informações referentes a cada inimgo*/
+tInimigo InicializaInimigo(int x, int y, char diretorio[], int fileira, int indice);
+
+/*Le os frames da animação no arquivo "inimigo.txt"*/
 tInimigo LeFramesInimigo(tInimigo inimigo);
-/*Acessa o arquivo de configuração do inimigo e armazena os desenhos*/
+
 
 
 typedef struct {
@@ -49,74 +72,60 @@ typedef struct {
     char desenho[TAM_JOGADOR][TAM_JOGADOR];
 }tJogador;
 
-tJogador InicializaJogador(FILE* config);
 /*Inicializa o jogador (desenho, simbolo e etc) a partir de um arquivo de configuração*/
+tJogador InicializaJogador(FILE* config);
 
-int LinhaJogador(tJogador jogador);
 /*Retorna a linha do jogador*/
+int LinhaJogador(tJogador jogador);
 
-int ColunaJogador(tJogador jogador);
 /*Retorna a coluna do jogador*/
+int ColunaJogador(tJogador jogador);
 
 
 
 typedef struct {
-    char arquivo[TAM_MAX_CAMINHO];
-    FILE* config;
-
     int largura;
     int altura;
-
     char grid[ALTURA_MAX_MAPA][LARGURA_MAX_MAPA];
-    char gridVazio[ALTURA_MAX_MAPA][LARGURA_MAX_MAPA];
+}tGrid;
+
+/*Cria o desenho do mapa*/
+tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo);
+
+void ImprimeTela(tGrid tela);
+
+/*Não são checados casos de sobreposição nem colisões.
+Considera-se que essas verificações são feitas na função de movimentar o jogador*/
+tGrid DesenhaJogadorNaTela(tGrid tela, tJogador jogador);
+
+tGrid DesenhaInimigosNaTela(tGrid tela, tInimigo inimigos[], int qtdInimigos, int iteracao);
+
+tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa);
+
+
+
+typedef struct {
+    tGrid mapa;
+    tGrid tela;
 
     tJogador jogador;
 
     int qtdInimigos;
+    int AlturaMaxInimigos;
     tInimigo inimigos[MAX_INIMIGOS];
-    int alturaMaximaInimigo;
-}tMapa;
 
-tMapa InicializaMapa(char diretorio[]);
-/*Le as informações dos arquivos de configuração e inicializa os valores*/
+    tTiro tiro;
 
-void GeraArquivoInicializacao(tMapa mapa, char diretorio[]);
-
-tMapa InicializaGridMapa(tMapa mapa);
-/*Inicializa os valores do gridVazio (somente as bordas e espaços em branco)*/
-
-tMapa AtualizaMapa(tMapa mapa);
-/*Desenha os "objetos" no mapa seguindo a ordem de prioridade*/
-
-tMapa DesenhaGridVazioNoMapa(tMapa mapa);
-/*Imprime no grid do mapa o grid vazio (apaga tudo)*/
-
-tMapa DesenhaJogadorNoMapa(tMapa mapa, tJogador jogador);
-/*Imprime o jogador no mapa
-(considera-se que o jogador fornecido nunca ultrapassará as bordas,
-pois essa condição ja é checada na função que movimenta o jogador)*/
-
-tMapa DesenhaInimigosNoMapa(tMapa mapa);
-/*Percorre o vetor de inimigos desenhando cada um deles no mapa
-(considera-se que o jogador fornecido nunca ultrapassará as bordas,
-pois essa condição ja é checada na função que movimenta o jogador)*/
-
-tMapa DesenhaInimigoNoMapa(tMapa mapa, tInimigo inimigo);
-/*Desenha um inimigo no mapa indiviodualmente*/
-
-tMapa InicializaInimigosNoMapa(tMapa mapa, char diretorio[]);
-/*Percorre o vetor inimigos inicializanodo cada um deles*/
-
-void ImprimeMapa(tMapa mapa);
-/*Imprime o mapa*/
-
-
-
-typedef struct {
-    tMapa mapa;
+    int iteracao;
+    int pontos;
 }tJogo;
 
+/*Faz as devidas inicializações e gera o codigo*/
 tJogo InicializaJogo(char diretorio[]);
+
+tJogo AtualizaTela(tJogo jogo);
+
+void GeraArquivoInicializacao(tGrid tela, tJogador jogador, char diretorio[]);
 
 
 
@@ -135,8 +144,6 @@ int main(int argc, char* argv[]) {
 
     jogo = InicializaJogo(diretorio);
 
-    ImprimeMapa(jogo.mapa);
-
     return 0;
 }
 
@@ -144,48 +151,71 @@ int main(int argc, char* argv[]) {
 
 tJogo InicializaJogo(char diretorio[]) {
     tJogo jogo;
-    jogo.mapa = InicializaMapa(diretorio);
+
+    jogo.iteracao = 0;
+    jogo.pontos = 0;
+
+    char caminhoMapa[TAM_MAX_CAMINHO];
+    FILE* mapa_txt;
+
+    //cria o caminho até o arquivo de configuração
+    strcpy(caminhoMapa, diretorio);
+    strcat(caminhoMapa, "/mapa.txt");
+
+    //abrindo o arquivo de configuração do mapa no modo leitura
+    mapa_txt = fopen(caminhoMapa, "r");
+    //checa se foi possivel abrir o arquivo no diretorio indicado
+    if (mapa_txt == NULL) {
+        printf("[ERRO] O arquivo \"%s\" nao foi encontrado.\n", caminhoMapa);
+        exit(1);
+    }
+
+
+    int larguraMapa;
+    int alturaMapa;
+
+    fscanf(mapa_txt, "%d %d\n", &larguraMapa, &alturaMapa);
+    if (MODO_DEBUG) printf("->Largua e altura do mapa: %d %d.\n", larguraMapa, alturaMapa);
+
+    jogo.jogador = InicializaJogador(mapa_txt);
+    if (MODO_DEBUG) printf("->Jogador inicializado.\n");
+
+    jogo.AlturaMaxInimigos = LinhaJogador(jogo.jogador) - 2;
+
+    jogo.mapa = InicializaMapa(larguraMapa, alturaMapa, jogo.AlturaMaxInimigos);
+    if (MODO_DEBUG) printf("->Mapa inicializado.\n");
+
+    //Inicialmente  não tem problema serem iguais. É mais conveniente do que criar outra função
+    jogo.tela = jogo.mapa;
+    if (MODO_DEBUG) printf("->Tela Inicializada.\n");
+
+
+    jogo.qtdInimigos = InicializaInimigos(jogo.inimigos, mapa_txt, diretorio);
+    if (MODO_DEBUG) printf("->Todos inmigos inicializados.\n");
+    //    jogo.tiro = InicializaTiro();
+
+    jogo = AtualizaTela(jogo);
+    if (MODO_DEBUG) printf("->Tela Atualizada\n");
+
+    GeraArquivoInicializacao(jogo.tela, jogo.jogador, diretorio);
+
+    ImprimeTela(jogo.tela);
+
+    fclose(mapa_txt);
+    return jogo;
+}
+
+tJogo AtualizaTela(tJogo jogo) {
+    jogo.tela = DesenhaMapaNaTela(jogo.tela, jogo.mapa);
+
+    jogo.tela = DesenhaJogadorNaTela(jogo.tela, jogo.jogador);
+
+    jogo.tela = DesenhaInimigosNaTela(jogo.tela, jogo.inimigos, jogo.qtdInimigos, jogo.iteracao);
 
     return jogo;
 }
 
-
-
-tMapa InicializaMapa(char diretorio[]) {
-    tMapa mapa;
-
-    //cria o caminho até o arquivo de configuração
-    strcpy(mapa.arquivo, diretorio);
-    strcat(mapa.arquivo, "/mapa.txt");
-
-    //abrindo o arquivo de configuração do mapa no modo leitura
-    mapa.config = fopen(mapa.arquivo, "r");
-    //checa se foi possivel abrir o arquivo no diretorio indicado
-    if (mapa.config == NULL) {
-        printf("[ERRO] O arquivo \"%s\" nao foi encontrado.\n", mapa.arquivo);
-        exit(1);
-    }
-
-    fscanf(mapa.config, "%d %d\n", &mapa.largura, &mapa.altura);
-
-    mapa.jogador = InicializaJogador(mapa.config);
-
-    mapa.alturaMaximaInimigo = LinhaJogador(mapa.jogador) - 2;
-
-    mapa = InicializaGridMapa(mapa);
-
-    mapa = InicializaInimigosNoMapa(mapa, diretorio);
-
-    mapa = AtualizaMapa(mapa);
-
-    GeraArquivoInicializacao(mapa, diretorio);
-
-    //fechando o arquivo de configuração do mapa
-    fclose(mapa.config);
-    return mapa;
-}
-
-void GeraArquivoInicializacao(tMapa mapa, char diretorio[]) {
+void GeraArquivoInicializacao(tGrid tela, tJogador jogador, char diretorio[]) {
     char diretorioSaida[TAM_MAX_CAMINHO];
     FILE* arquivoInicializacao;
 
@@ -193,136 +223,20 @@ void GeraArquivoInicializacao(tMapa mapa, char diretorio[]) {
     strcat(diretorioSaida, "/saida/inicializacao.txt");
     arquivoInicializacao = fopen(diretorioSaida, "w");
 
-    //Desenha o mapa em "inicializacao.txt"
+    if (MODO_DEBUG) printf("->inicializacao.txt criado.\n");
+    //Desenha a tela em "inicializacao.txt"
 
-    for (int i = 0; i < mapa.altura + 2; i++) {
-        for (int j = 0; j < mapa.largura + 2; j++) {
-            fprintf(arquivoInicializacao, "%c", mapa.grid[i][j]);
+    for (int i = 0; i < tela.altura + 2; i++) {
+        for (int j = 0; j < tela.largura + 2; j++) {
+            fprintf(arquivoInicializacao, "%c", tela.grid[i][j]);
         }
         fprintf(arquivoInicializacao, "\n");
     }
 
     fprintf(arquivoInicializacao, "A posicao central do jogador iniciara em (%d %d).",
-        ColunaJogador(mapa.jogador), LinhaJogador(mapa.jogador));
+        jogador.x, jogador.y);
 
     fclose(arquivoInicializacao);
-}
-
-tMapa InicializaGridMapa(tMapa mapa) {
-    for (int i = 0; i < mapa.altura + 2; i++) {
-        for (int j = 0; j < mapa.largura + 2; j++) {
-            if ((i == 0 || i > mapa.altura) && (j == 0 || j > mapa.largura)) {
-                mapa.gridVazio[i][j] = '+';
-            } else if (i == 0 || i > mapa.altura) {
-                mapa.gridVazio[i][j] = '-';
-            } else if (j == 0 || j > mapa.largura) {
-                if (i == mapa.alturaMaximaInimigo) {
-                    mapa.gridVazio[i][j] = '-';
-                } else {
-                    mapa.gridVazio[i][j] = '|';
-                }
-            } else {
-                mapa.gridVazio[i][j] = ' ';
-            }
-        }
-    }
-    return mapa;
-}
-
-void ImprimeMapa(tMapa mapa) {
-    for (int i = 0; i < mapa.altura + 2; i++) {
-        for (int j = 0; j < mapa.largura + 2; j++) {
-            printf("%c", mapa.grid[i][j]);
-        }
-        printf("\n");
-    }
-}
-
-tMapa DesenhaGridVazioNoMapa(tMapa mapa) {
-    for (int i = 0; i < mapa.altura + 2; i++) {
-        for (int j = 0; j < mapa.largura + 2; j++) {
-            mapa.grid[i][j] = mapa.gridVazio[i][j];
-        }
-    }
-
-    return mapa;
-}
-
-tMapa DesenhaJogadorNoMapa(tMapa mapa, tJogador jogador) {
-
-    //laço que percorre todas as posições do desenho do jogador
-    int k = -1;
-    for (int i = 0; i < TAM_JOGADOR; i++) {
-        int l = -1;
-        for (int j = 0; j < TAM_JOGADOR; j++) {
-            mapa.grid[jogador.y + k][jogador.x + l] = jogador.desenho[i][j];
-            l++;
-        }
-        k++;
-    }
-    return mapa;
-}
-
-tMapa DesenhaInimigosNoMapa(tMapa mapa) {
-    for (int i = 0; i < mapa.qtdInimigos; i++) {
-        mapa = DesenhaInimigoNoMapa(mapa, mapa.inimigos[i]);
-    }
-    return mapa;
-}
-
-tMapa DesenhaInimigoNoMapa(tMapa mapa, tInimigo inimigo) {
-
-    //laço que percorre todas as posições do desenho do inimigo
-    int k = -1;
-    int frame = 0;
-    for (int i = 0; i < TAM_JOGADOR; i++) {
-        int l = -1;
-        for (int j = 0; j < TAM_JOGADOR; j++) {
-            mapa.grid[inimigo.y + k][inimigo.x + l] = inimigo.frames[frame][i][j];
-            l++;
-        }
-        k++;
-    }
-    return mapa;
-}
-
-tMapa AtualizaMapa(tMapa mapa) {
-    mapa = DesenhaGridVazioNoMapa(mapa);
-
-    mapa = DesenhaJogadorNoMapa(mapa, mapa.jogador);
-
-    mapa = DesenhaInimigosNoMapa(mapa);
-
-    return mapa;
-}
-
-tMapa InicializaInimigosNoMapa(tMapa mapa, char diretorio[]) {
-    int inimigoAtual = 0;
-    mapa.qtdInimigos = 0;
-
-    for (int i = 0; i < QTD_FILEIRAS; i++) {
-        char lixo;
-        int indice = 1;
-
-        while (TRUE) {
-            fscanf(mapa.config, "%c", &lixo);
-            if (lixo == ' ') {
-                //vai ler o proximo inimigo na fileira
-                continue;
-            } else if (lixo == '(') {
-                mapa.inimigos[inimigoAtual] = InicializaInimigo(mapa.config, diretorio, i + 1, indice);
-                fscanf(mapa.config, ")");
-                indice++;
-                mapa.qtdInimigos++;
-                inimigoAtual++;
-            } else {
-                //terminou a fileira
-                break;
-            }
-        }
-    }
-
-    return mapa;
 }
 
 
@@ -331,6 +245,7 @@ tJogador InicializaJogador(FILE* config) {
     tJogador jogador;
 
     fscanf(config, "(%d %d)\n", &jogador.x, &jogador.y);
+    if (MODO_DEBUG) printf("->Posicao incial do jogador: (%d %d)\n", jogador.x, jogador.y);
 
     jogador.s = 'M';
 
@@ -342,6 +257,18 @@ tJogador InicializaJogador(FILE* config) {
             } else {
                 jogador.desenho[i][j] = jogador.s;
             }
+        }
+    }
+
+    if (MODO_DEBUG) {
+        printf("->Desenho do Jogador:\n");
+
+        for (int i = 0; i < TAM_JOGADOR; i++) {
+            printf("\t");
+            for (int j = 0; j < TAM_JOGADOR; j++) {
+                printf("%c", jogador.desenho[i][j]);
+            }
+            printf("\n");
         }
     }
 
@@ -358,7 +285,137 @@ int ColunaJogador(tJogador jogador) {
 
 
 
-tInimigo InicializaInimigo(FILE* configMapa, char diretorio[], int fileira, int indice) {
+tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo) {
+    tGrid mapa;
+
+    mapa.largura = largura;
+    mapa.altura = altura;
+
+    for (int i = 0; i < mapa.altura + 2; i++) {
+        for (int j = 0; j < mapa.largura + 2; j++) {
+            if ((i == 0 || i == mapa.altura + 1) && (j == 0 || j == mapa.largura + 1)) {
+                mapa.grid[i][j] = '+';
+            } else if (i == 0 || i == mapa.altura + 1) {
+                mapa.grid[i][j] = '-';
+            } else if (j == 0 || j == mapa.largura + 1) {
+                if (i == alturaMaxInimigo) {
+                    mapa.grid[i][j] = '-';
+                } else {
+                    mapa.grid[i][j] = '|';
+                }
+            } else {
+                mapa.grid[i][j] = ' ';
+            }
+        }
+    }
+
+    return mapa;
+}
+
+tGrid DesenhaJogadorNaTela(tGrid tela, tJogador jogador) {
+    //laço que percorre todas as posições do desenho do jogador
+    int k = -1;
+    for (int i = 0; i < TAM_JOGADOR; i++) {
+        int l = -1;
+        for (int j = 0; j < TAM_JOGADOR; j++) {
+            tela.grid[jogador.y + k][jogador.x + l] = jogador.desenho[i][j];
+            l++;
+        }
+        k++;
+    }
+
+    if (MODO_DEBUG) printf("->Jogador desenhado no grid da tela.\n");
+
+    return tela;
+}
+
+void ImprimeTela(tGrid tela) {
+    for (int i = 0; i < tela.altura + 2; i++) {
+        for (int j = 0; j < tela.largura + 2; j++) {
+            printf("%c", tela.grid[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+tGrid DesenhaInimigosNaTela(tGrid tela, tInimigo inimigos[], int qtdInimigos, int iteracao) {
+    //laço que percorre todos os inimigos do vetor
+    for (int x = 0; x < qtdInimigos; x++) {
+        if (inimigos[x].estaVivo) {
+            //laço que percorre todas as posições do desenho do inimigo
+            int k = -1;
+            int frame;
+
+            if (inimigos[x].animado) {
+                frame = iteracao % QTD_FRAMES;
+            } else {
+                frame = 0;
+            }
+
+            for (int i = 0; i < TAM_INIMIGO; i++) {
+                int l = -1;
+                for (int j = 0; j < TAM_INIMIGO; j++) {
+                    tela.grid[inimigos[x].y + k][inimigos[x].x + l] = inimigos[x].frames[frame][i][j];
+                    l++;
+                }
+                k++;
+            }
+            if (MODO_DEBUG) {
+                printf("->Inimigo %d desenhado no grid da tela:\n", x);
+                ImprimeTela(tela);
+            }
+        }
+    }
+
+    return tela;
+}
+
+tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa) {
+
+    for (int i = 0; i < tela.altura + 2; i++) {
+        for (int j = 0; j < tela.largura + 2; j++) {
+            tela.grid[i][j] = mapa.grid[i][j];
+        }
+    }
+
+    return tela;
+}
+
+
+
+
+int InicializaInimigos(tInimigo inimigos[], FILE* mapa_txt, char diretorio[]) {
+    int inimigoAtual = 0;
+    int qtdInimigos = 0;
+
+    for (int i = 0; i < QTD_FILEIRAS; i++) {
+        char lixo;
+        int indice = 1;
+
+        while (TRUE) {
+            fscanf(mapa_txt, "%c", &lixo);
+            if (lixo == ' ') {
+                //vai ler o proximo inimigo na fileira
+                continue;
+            } else if (lixo == '(') {
+                int x, y;
+                fscanf(mapa_txt, "%d %d)", &x, &y);
+
+                inimigos[inimigoAtual] = InicializaInimigo(x, y, diretorio, i + 1, indice);
+                indice++;
+                qtdInimigos++;
+                inimigoAtual++;
+            } else {
+                //terminou a fileira
+                break;
+            }
+        }
+    }
+
+    return qtdInimigos;
+}
+
+tInimigo InicializaInimigo(int x, int y, char diretorio[], int fileira, int indice) {
     tInimigo inimigo;
 
     strcpy(inimigo.arquivo, diretorio);
@@ -366,12 +423,21 @@ tInimigo InicializaInimigo(FILE* configMapa, char diretorio[], int fileira, int 
 
     inimigo.estaVivo = TRUE;
 
-    fscanf(configMapa, "%d %d", &inimigo.x, &inimigo.y);
+    inimigo.x = x;
+    inimigo.y = y;
 
+    if (MODO_DEBUG) printf("Lendo frames do inimigo.\n");
     inimigo = LeFramesInimigo(inimigo);
 
     inimigo.fileira = fileira;
     inimigo.indice = indice;
+
+    if (MODO_DEBUG) {
+        printf("->Inimigo inicializado:\n");
+        printf("\tFileira: %d\n", inimigo.fileira);
+        printf("\tIndice: %d\n", inimigo.indice);
+        printf("\tPosicao: (%d %d)\n", inimigo.x, inimigo.y);
+    }
 
     return inimigo;
 }
@@ -395,12 +461,17 @@ tInimigo LeFramesInimigo(tInimigo inimigo) {
         }
     }
 
-    // for (int i = 0; i < TAM_INIMIGO; i++) {
-    //     for (int j = 0; j < TAM_INIMIGO; j++) {
-    //         printf("'%c'", inimigo.frames[0][i][j]);
-    //     }
-    //     printf("\n");
-    // }
+
+    if (MODO_DEBUG) {
+        printf("  Frame 0:\n");
+        for (int i = 0; i < TAM_INIMIGO; i++) {
+            printf("\t");
+            for (int j = 0; j < TAM_INIMIGO; j++) {
+                printf("%c", inimigo.frames[0][i][j]);
+            }
+            printf("\n");
+        }
+    }
 
     fclose(inimigo.config);
     return inimigo;

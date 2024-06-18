@@ -1,3 +1,796 @@
+->Largua e altura do mapa: 100 40.
+->Posicao incial do jogador: (10 39)
+->Desenho do Jogador:
+	M M
+	MMM
+	MMM
+->Jogador inicializado.
+->Mapa inicializado.
+->Tela Inicializada.
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 1
+	Indice: 1
+	Posicao: (12 3)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 1
+	Indice: 2
+	Posicao: (32 3)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 1
+	Indice: 3
+	Posicao: (52 3)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 1
+	Indice: 4
+	Posicao: (72 3)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 1
+	Indice: 5
+	Posicao: (92 3)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 2
+	Indice: 1
+	Posicao: (8 10)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 2
+	Indice: 2
+	Posicao: (28 10)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 2
+	Indice: 3
+	Posicao: (48 10)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 2
+	Indice: 4
+	Posicao: (68 10)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 2
+	Indice: 5
+	Posicao: (88 10)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 3
+	Indice: 1
+	Posicao: (12 17)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 3
+	Indice: 2
+	Posicao: (32 17)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 3
+	Indice: 3
+	Posicao: (52 17)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 3
+	Indice: 4
+	Posicao: (72 17)
+Lendo frames do inimigo.
+  Frame 0:
+	011
+	001
+	BUG
+->Inimigo inicializado:
+	Fileira: 3
+	Indice: 5
+	Posicao: (92 17)
+->Todos inmigos inicializados.
+->Jogador desenhado no grid da tela.
+->Inimigo 0 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                                                                                       |
+|          001                                                                                       |
+|          BUG                                                                                       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 1 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                                                                   |
+|          001                 001                                                                   |
+|          BUG                 BUG                                                                   |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 2 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                 011                                               |
+|          001                 001                 001                                               |
+|          BUG                 BUG                 BUG                                               |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 3 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                 011                 011                           |
+|          001                 001                 001                 001                           |
+|          BUG                 BUG                 BUG                 BUG                           |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 4 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                 011                 011                 011       |
+|          001                 001                 001                 001                 001       |
+|          BUG                 BUG                 BUG                 BUG                 BUG       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 5 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                 011                 011                 011       |
+|          001                 001                 001                 001                 001       |
+|          BUG                 BUG                 BUG                 BUG                 BUG       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|      011                                                                                           |
+|      001                                                                                           |
+|      BUG                                                                                           |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 6 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                 011                 011                 011       |
+|          001                 001                 001                 001                 001       |
+|          BUG                 BUG                 BUG                 BUG                 BUG       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|      011                 011                                                                       |
+|      001                 001                                                                       |
+|      BUG                 BUG                                                                       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 7 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                 011                 011                 011       |
+|          001                 001                 001                 001                 001       |
+|          BUG                 BUG                 BUG                 BUG                 BUG       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|      011                 011                 011                                                   |
+|      001                 001                 001                                                   |
+|      BUG                 BUG                 BUG                                                   |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 8 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                 011                 011                 011       |
+|          001                 001                 001                 001                 001       |
+|          BUG                 BUG                 BUG                 BUG                 BUG       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|      011                 011                 011                 011                               |
+|      001                 001                 001                 001                               |
+|      BUG                 BUG                 BUG                 BUG                               |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 9 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                 011                 011                 011       |
+|          001                 001                 001                 001                 001       |
+|          BUG                 BUG                 BUG                 BUG                 BUG       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|      011                 011                 011                 011                 011           |
+|      001                 001                 001                 001                 001           |
+|      BUG                 BUG                 BUG                 BUG                 BUG           |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 10 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                 011                 011                 011       |
+|          001                 001                 001                 001                 001       |
+|          BUG                 BUG                 BUG                 BUG                 BUG       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|      011                 011                 011                 011                 011           |
+|      001                 001                 001                 001                 001           |
+|      BUG                 BUG                 BUG                 BUG                 BUG           |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|          011                                                                                       |
+|          001                                                                                       |
+|          BUG                                                                                       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 11 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                 011                 011                 011       |
+|          001                 001                 001                 001                 001       |
+|          BUG                 BUG                 BUG                 BUG                 BUG       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|      011                 011                 011                 011                 011           |
+|      001                 001                 001                 001                 001           |
+|      BUG                 BUG                 BUG                 BUG                 BUG           |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|          011                 011                                                                   |
+|          001                 001                                                                   |
+|          BUG                 BUG                                                                   |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 12 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                 011                 011                 011       |
+|          001                 001                 001                 001                 001       |
+|          BUG                 BUG                 BUG                 BUG                 BUG       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|      011                 011                 011                 011                 011           |
+|      001                 001                 001                 001                 001           |
+|      BUG                 BUG                 BUG                 BUG                 BUG           |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|          011                 011                 011                                               |
+|          001                 001                 001                                               |
+|          BUG                 BUG                 BUG                                               |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 13 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                 011                 011                 011       |
+|          001                 001                 001                 001                 001       |
+|          BUG                 BUG                 BUG                 BUG                 BUG       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|      011                 011                 011                 011                 011           |
+|      001                 001                 001                 001                 001           |
+|      BUG                 BUG                 BUG                 BUG                 BUG           |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|          011                 011                 011                 011                           |
+|          001                 001                 001                 001                           |
+|          BUG                 BUG                 BUG                 BUG                           |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Inimigo 14 desenhado no grid da tela:
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|          011                 011                 011                 011                 011       |
+|          001                 001                 001                 001                 001       |
+|          BUG                 BUG                 BUG                 BUG                 BUG       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|      011                 011                 011                 011                 011           |
+|      001                 001                 001                 001                 001           |
+|      BUG                 BUG                 BUG                 BUG                 BUG           |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|          011                 011                 011                 011                 011       |
+|          001                 001                 001                 001                 001       |
+|          BUG                 BUG                 BUG                 BUG                 BUG       |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+|                                                                                                    |
+-                                                                                                    -
+|        M M                                                                                         |
+|        MMM                                                                                         |
+|        MMM                                                                                         |
++----------------------------------------------------------------------------------------------------+
+->Tela Atualizada
+->inicializacao.txt criado.
 +----------------------------------------------------------------------------------------------------+
 |                                                                                                    |
 |          011                 011                 011                 011                 011       |

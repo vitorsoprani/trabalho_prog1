@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MODO_DEBUG          1
+#define MODO_DEBUG          0
 
 #define TRUE                1
 #define FALSE               0
@@ -26,6 +26,8 @@
 
 
 
+
+
 typedef struct {
     char s;
 
@@ -34,6 +36,8 @@ typedef struct {
 
     int estaAtivo;
 }tTiro;
+
+
 
 
 
@@ -64,6 +68,8 @@ tInimigo LeFramesInimigo(tInimigo inimigo);
 
 
 
+
+
 typedef struct {
     int x;
     int y;
@@ -80,6 +86,8 @@ int LinhaJogador(tJogador jogador);
 
 /*Retorna a coluna do jogador*/
 int ColunaJogador(tJogador jogador);
+
+
 
 
 
@@ -101,6 +109,8 @@ tGrid DesenhaJogadorNaTela(tGrid tela, tJogador jogador);
 tGrid DesenhaInimigosNaTela(tGrid tela, tInimigo inimigos[], int qtdInimigos, int iteracao);
 
 tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa);
+
+
 
 
 
@@ -129,6 +139,8 @@ void GeraArquivoInicializacao(tGrid tela, tJogador jogador, char diretorio[]);
 
 
 
+
+
 tJogo jogo;
 
 int main(int argc, char* argv[]) {
@@ -146,6 +158,8 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+
+
 
 
 
@@ -199,8 +213,6 @@ tJogo InicializaJogo(char diretorio[]) {
 
     GeraArquivoInicializacao(jogo.tela, jogo.jogador, diretorio);
 
-    ImprimeTela(jogo.tela);
-
     fclose(mapa_txt);
     return jogo;
 }
@@ -238,6 +250,8 @@ void GeraArquivoInicializacao(tGrid tela, tJogador jogador, char diretorio[]) {
 
     fclose(arquivoInicializacao);
 }
+
+
 
 
 
@@ -282,6 +296,8 @@ int LinhaJogador(tJogador jogador) {
 int ColunaJogador(tJogador jogador) {
     return jogador.x;
 }
+
+
 
 
 
@@ -380,6 +396,7 @@ tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa) {
 
     return tela;
 }
+
 
 
 
