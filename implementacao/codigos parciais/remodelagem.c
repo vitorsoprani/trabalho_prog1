@@ -87,6 +87,7 @@ int LinhaJogador(tJogador jogador);
 /*Retorna a coluna do jogador*/
 int ColunaJogador(tJogador jogador);
 
+tJogador MoveJogador(int larguraMapa, tJogador jogador, char movimento);
 
 
 
@@ -109,6 +110,8 @@ tGrid DesenhaJogadorNaTela(tGrid tela, tJogador jogador);
 tGrid DesenhaInimigosNaTela(tGrid tela, tInimigo inimigos[], int qtdInimigos, int iteracao);
 
 tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa);
+
+int Largura(tGrid grid);
 
 
 
@@ -137,7 +140,9 @@ tJogo AtualizaTela(tJogo jogo);
 
 void GeraArquivoInicializacao(tGrid tela, tJogador jogador, char diretorio[]);
 
+tJogo RealizaJogo(tJogo jogo);
 
+tJogo RealizaJogada(tJogo jogo, char jogada);
 
 
 
@@ -155,6 +160,8 @@ int main(int argc, char* argv[]) {
     strcpy(diretorio, argv[1]);
 
     jogo = InicializaJogo(diretorio);
+
+    jogo = RealizaJogo(jogo);
 
     return 0;
 }
@@ -251,6 +258,56 @@ void GeraArquivoInicializacao(tGrid tela, tJogador jogador, char diretorio[]) {
     fclose(arquivoInicializacao);
 }
 
+tJogo RealizaJogo(tJogo jogo) {
+    /*
+        #Verifica condiçõesa de vitoria/derrota;
+        #Verifica colisao do tiro com o inimigo;
+        #Move inimigos;
+        #Move tiro (caso atinja a borda, desabilita-lo);
+        #incrementar contador de iterações (inicia em 0);
+        #Ler joagda do usuário, (w a s d ou ' '), se o jogador for ultrapassar a borda ele não deve ser movido
+            e só deve ser efetuado um novo disparo caso não haja tiros ativos no mapa.
+        #imprimir na saída padrão os pontos, as iterações e o mapa;
+    */
+    char jogada;
+
+    while (TRUE) {
+        system("clear");
+        jogo = AtualizaTela(jogo);
+        printf("Pontos: %d | Iteracoes: %d\n", jogo.pontos, jogo.iteracao);
+        ImprimeTela(jogo.tela);
+
+        //verifica vitoria/derrota
+
+        //verifica morte de inimigos
+
+        //move inimigos
+
+        //move tiro
+
+        jogo.iteracao++;
+
+        scanf("%c", &jogada);
+        scanf("%*c");
+
+        jogo = RealizaJogada(jogo, jogada);
+    }
+
+    return jogo;
+}
+
+tJogo RealizaJogada(tJogo jogo, char jogada) {
+    if (jogada == MOV_ESQUERDA || jogada == MOV_DIREITA || jogada == PASSAR_A_VEZ) {
+        jogo.jogador = MoveJogador(Largura(jogo.mapa), jogo.jogador, jogada);
+    } else if (jogada == ATIRAR) {
+        //jogo.tiro = EfetuaTiro(jogo.jogador, jogo.tiro);
+    } else {
+        printf("[ERRO] Jogada nao definida. Suposta jogada: '%c'.\n", jogada);
+        exit(1);
+    }
+
+    return jogo;
+}
 
 
 
@@ -295,6 +352,26 @@ int LinhaJogador(tJogador jogador) {
 
 int ColunaJogador(tJogador jogador) {
     return jogador.x;
+}
+
+tJogador MoveJogador(int larguraMapa, tJogador jogador, char movimento) {
+    if (movimento == MOV_ESQUERDA) {
+        if (jogador.x - 2 > 0) {
+            jogador.x--;
+        } else {
+        }
+    } else if (movimento == MOV_DIREITA) {
+        if (jogador.x + 2 < larguraMapa) {
+            jogador.x++;
+        } else {
+        }
+    } else if (movimento == PASSAR_A_VEZ) {
+        printf("Passou a vez! \n");
+    } else {
+        printf("[ERRO NAO IDENTIFICADO] Em MoveJogador(). Suposto movimento: %c", movimento);
+        exit(1);
+    }
+    return jogador;
 }
 
 
@@ -395,6 +472,10 @@ tGrid DesenhaMapaNaTela(tGrid tela, tGrid mapa) {
     }
 
     return tela;
+}
+
+int Largura(tGrid grid) {
+    return grid.largura;
 }
 
 
