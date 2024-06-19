@@ -425,7 +425,7 @@ tJogo ColisaoInimigosTiro(tJogo jogo, tInimigo inimigos[], tTiro tiro) {
             inimigos[i].estaVivo = FALSE;
             jogo.tiro = tiro;
             jogo.inimigos[i] = inimigos[i];
-            jogo.pontos += inimigos[i].x * (jogo.mapa.altura - inimigos[i].y); //CONSERTAR ACESSO INDEVIDO
+            jogo.pontos += inimigos[i].x * (jogo.mapa.altura - inimigos[i].y); //CONSERTAR ACESSO INDEVIDO 
         }
     }
 
