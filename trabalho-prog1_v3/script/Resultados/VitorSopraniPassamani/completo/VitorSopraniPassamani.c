@@ -163,6 +163,16 @@ tJogo RealizaJogo(tJogo jogo);
 
 tJogo RealizaJogada(tJogo jogo, char jogada);
 
+/*Percorre o vetor de inimigos checando se cada um deles colidiu com o tiro
+e atualizando os status quando necessário*/
+tJogo ColisaoInimigosTiro(tJogo jogo, tInimigo inimigos[], tTiro tiro);
+
+/*Checa se um dado inimigo colidiu com um tiro*/
+int ColidiuInimigoTiro(tInimigo inimigo, tTiro tiro);
+
+int VerificaVitoria(tJogo jogo, tInimigo inimigos[]);
+
+int VerificaDerrota(tJogo jogo, tInimigo inimigos[]);
 
 
 
@@ -183,7 +193,7 @@ int main(int argc, char* argv[]) {
 
     jogo = InicializaJogo(diretorio);
 
-    //jogo = RealizaJogo(jogo);
+    jogo = RealizaJogo(jogo);
 
     return 0;
 }
@@ -375,14 +385,21 @@ tJogo RealizaJogo(tJogo jogo) {
     char jogada;
 
     while (TRUE) {
-        system("clear");
+        //system("clear");
         jogo = AtualizaTela(jogo);
         printf("Pontos: %d | Iteracoes: %d\n", jogo.pontos, jogo.iteracao);
         ImprimeTela(jogo.tela);
 
-        //verifica vitoria/derrota
+        if (VerificaDerrota(jogo, jogo.inimigos)) {
+            printf("Você perdeu, tente novamente!");
+            break;
+        }
+        if (VerificaVitoria(jogo, jogo.inimigos)) {
+            printf("Parabéns, você ganhou!");
+            break;
+        }
 
-        //verifica morte de inimigos
+        jogo = ColisaoInimigosTiro(jogo, jogo.inimigos, jogo.tiro);
 
         MoveInimigos(jogo.inimigos, jogo.qtdInimigos, jogo.mapa);
 
@@ -411,6 +428,51 @@ tJogo RealizaJogada(tJogo jogo, char jogada) {
 
     return jogo;
 }
+
+tJogo ColisaoInimigosTiro(tJogo jogo, tInimigo inimigos[], tTiro tiro) {
+    for (int i = 0; i < jogo.qtdInimigos; i++) {
+        if (ColidiuInimigoTiro(inimigos[i], tiro)) {
+            tiro.estaAtivo = FALSE;
+            inimigos[i].estaVivo = FALSE;
+            jogo.tiro = tiro;
+            jogo.inimigos[i] = inimigos[i];
+            jogo.pontos += inimigos[i].x * (jogo.mapa.altura - inimigos[i].y); //CONSERTAR ACESSO INDEVIDO 
+        }
+    }
+
+    return jogo;
+}
+
+int ColidiuInimigoTiro(tInimigo inimigo, tTiro tiro) {
+    if (tiro.estaAtivo == FALSE) return FALSE;
+    if (inimigo.estaVivo == FALSE) return  FALSE;
+
+    for (int i = -1; i <= 1; i++) {
+        for (int j = -1;j <= 1; j++) {
+            if (inimigo.y + i == tiro.y && inimigo.x + j == tiro.x) {
+                return TRUE;
+            }
+        }
+    }
+    return FALSE;
+}
+
+int VerificaVitoria(tJogo jogo, tInimigo inimigos[]) {
+    for (int i = 0; i < jogo.qtdInimigos; i++) {
+        if (inimigos[i].estaVivo == TRUE) return FALSE;
+    }
+
+    return TRUE;
+}
+
+int VerificaDerrota(tJogo jogo, tInimigo inimigos[]) {
+    for (int i = 0; i < jogo.qtdInimigos; i++) {
+        if (inimigos[i].y >= jogo.alturaMaxInimigos && inimigos[i].estaVivo) return TRUE;
+    }
+
+    return FALSE;
+}
+
 
 
 
@@ -464,12 +526,12 @@ tJogador MoveJogador(tGrid mapa, tJogador jogador, char movimento) {
         } else {
         }
     } else if (movimento == MOV_DIREITA) {
-        if (jogador.x + 2 < mapa.largura) {
+        if (jogador.x + 2 < mapa.largura + 1) {
             jogador.x++;
         } else {
         }
     } else if (movimento == PASSAR_A_VEZ) {
-        printf("Passou a vez! \n");
+        //printf("Passou a vez! \n");
     } else {
         printf("[ERRO NAO IDENTIFICADO] Em MoveJogador(). Suposto movimento: %c", movimento);
         exit(1);
@@ -640,7 +702,7 @@ void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGrid mapa) {
 
 int ChecaColisaoInimigosParede(tInimigo inimigos[], int qtdInimigos, tGrid mapa) {
     for (int i = 0; i < qtdInimigos; i++) {
-        if (inimigos[i].x - 1 == 0 || inimigos[i].x + 1 > mapa.largura) {
+        if ((inimigos[i].x - 1 == 0 || inimigos[i].x + 1 > mapa.largura) && inimigos[i].estaVivo) {
             return TRUE;
         }
     }
@@ -660,7 +722,7 @@ tTiro InicializaTiro() {
 }
 
 tTiro EfetuaTiro(tJogador jogador, tTiro tiro) {
-    if (!tiro.estaAtivo) {
+    if (tiro.estaAtivo == FALSE) {
         tiro.estaAtivo = TRUE;
         tiro.x = jogador.x;
         tiro.y = jogador.y - 2;
@@ -669,10 +731,13 @@ tTiro EfetuaTiro(tJogador jogador, tTiro tiro) {
 }
 
 tTiro MoveTiro(tTiro tiro) {
-    if (tiro.y - 1 < 1) {
-        tiro.estaAtivo = FALSE;
-    } else {
-        tiro.y--;
+    if (tiro.estaAtivo) {
+        if (tiro.y - 1 < 1) {
+            tiro.estaAtivo = FALSE;
+        } else {
+            tiro.y--;
+        }
     }
     return tiro;
 }
+
