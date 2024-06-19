@@ -63,6 +63,8 @@ typedef struct {
     int indice;
 
     int direcao;
+
+    int numeroDeDescidas;
 }tInimigo;
 
 /*Inicializa cada inimigo no vetor de inimigos e retorna a quantidade de inimigos*/
@@ -80,6 +82,8 @@ void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGrid mapa);
 /*Percorre o vetor de inimigos e retorna TRUE caso haja alguma colisão com a parede e FALSE caso contrario*/
 int ChecaColisaoInimigosParede(tInimigo inimigos[], int qtdInimigos, tGrid mapa);
 
+int NumeroDeDescidas(tInimigo inimigo);
+
 
 
 
@@ -90,6 +94,8 @@ typedef struct {
 
     char s; //carcater que representa o jogador;
     char desenho[TAM_JOGADOR][TAM_JOGADOR];
+
+    int numeroDeMovimentos;
 }tJogador;
 
 /*Inicializa o jogador (desenho, simbolo e etc) a partir de um arquivo de configuração*/
@@ -103,6 +109,8 @@ int ColunaJogador(tJogador jogador);
 
 tJogador MoveJogador(tGrid mapa, tJogador jogador, char movimento);
 
+int NumeroDeMovimentos(tJogador tJogador);
+
 
 
 
@@ -114,6 +122,9 @@ typedef struct {
     int y;
 
     int estaAtivo;
+
+    int numeroDeTiros;
+    int numeroDeTirosErrados;
 }tTiro;
 
 tTiro InicializaTiro();
@@ -121,6 +132,10 @@ tTiro InicializaTiro();
 tTiro EfetuaTiro(tJogador jogador, tTiro tiro);
 
 tTiro MoveTiro(tTiro tiro);
+
+int NumeroDeTiros(tTiro tiro);
+
+int NumeroDeTirosErrados(tTiro tiro);
 
 
 
@@ -174,6 +189,8 @@ int VerificaVitoria(tJogo jogo, tInimigo inimigos[]);
 
 int VerificaDerrota(tJogo jogo, tInimigo inimigos[]);
 
+void GeraEstatisticas(tJogo jogo, char diretorio[]);
+
 
 
 
@@ -194,6 +211,8 @@ int main(int argc, char* argv[]) {
     jogo = InicializaJogo(diretorio);
 
     jogo = RealizaJogo(jogo);
+
+    GeraEstatisticas(jogo, diretorio);
 
     return 0;
 }
@@ -385,7 +404,7 @@ tJogo RealizaJogo(tJogo jogo) {
     char jogada;
 
     while (TRUE) {
-        system("clear");
+        //system("clear");
         jogo = AtualizaTela(jogo);
         printf("Pontos: %d | Iteracoes: %d\n", jogo.pontos, jogo.iteracao);
         ImprimeTela(jogo.tela);
@@ -473,6 +492,30 @@ int VerificaDerrota(tJogo jogo, tInimigo inimigos[]) {
     return FALSE;
 }
 
+void GeraEstatisticas(tJogo jogo, char diretorio[]) {
+    /*
+    Numero total de movimentos (A ou D): 34;
+    Numero de tiros efetivos: 3;
+    Numero de tiros que nao acertaram: 0;
+    Numero de descidas dos inimigos: 2;
+    */
+
+    char diretorioSaida[TAM_MAX_CAMINHO];
+    FILE* arquivoEstatisticas;
+
+    strcpy(diretorioSaida, diretorio);
+    strcat(diretorioSaida, "/saida/estatisticas.txt");
+    arquivoEstatisticas = fopen(diretorioSaida, "w");
+
+    fprintf(arquivoEstatisticas, "Numero total de movimentos (A ou D): %d;\n", NumeroDeMovimentos(jogo.jogador));
+    fprintf(arquivoEstatisticas, "Numero de tiros efetivos: %d;\n", NumeroDeTiros(jogo.tiro));
+    fprintf(arquivoEstatisticas, "Numero de tiros que nao acertaram: %d;\n", NumeroDeTirosErrados(jogo.tiro));
+    fprintf(arquivoEstatisticas, "Numero de descidas dos inimigos: %d;\n", NumeroDeDescidas(jogo.inimigos[0]));
+
+
+    fclose(arquivoEstatisticas);
+}
+
 
 
 
@@ -508,6 +551,8 @@ tJogador InicializaJogador(FILE* config) {
         }
     }
 
+    jogador.numeroDeMovimentos = 0;
+
     return jogador;
 }
 
@@ -523,11 +568,13 @@ tJogador MoveJogador(tGrid mapa, tJogador jogador, char movimento) {
     if (movimento == MOV_ESQUERDA) {
         if (jogador.x - 2 > 0) {
             jogador.x--;
+            jogador.numeroDeMovimentos++;
         } else {
         }
     } else if (movimento == MOV_DIREITA) {
         if (jogador.x + 2 < mapa.largura + 1) {
             jogador.x++;
+            jogador.numeroDeMovimentos++;
         } else {
         }
     } else if (movimento == PASSAR_A_VEZ) {
@@ -537,6 +584,10 @@ tJogador MoveJogador(tGrid mapa, tJogador jogador, char movimento) {
         exit(1);
     }
     return jogador;
+}
+
+int NumeroDeMovimentos(tJogador tJogador) {
+    return tJogador.numeroDeMovimentos;
 }
 
 
@@ -627,6 +678,8 @@ tInimigo InicializaInimigo(int x, int y, char diretorio[], int fileira, int indi
     inimigo.x = x;
     inimigo.y = y;
 
+    inimigo.numeroDeDescidas = 0;
+
     if (MODO_DEBUG) printf("Lendo frames do inimigo.\n");
     inimigo = LeFramesInimigo(inimigo);
 
@@ -696,6 +749,7 @@ void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGrid mapa) {
                 inimigos[i].x++;
             }
             inimigos[i].y++;
+            inimigos[i].numeroDeDescidas++;
         }
     }
 }
@@ -709,6 +763,10 @@ int ChecaColisaoInimigosParede(tInimigo inimigos[], int qtdInimigos, tGrid mapa)
     return FALSE;
 }
 
+int NumeroDeDescidas(tInimigo inimigo) {
+    return inimigo.numeroDeDescidas;
+}
+
 
 
 
@@ -717,6 +775,8 @@ tTiro InicializaTiro() {
     tTiro tiro;
     tiro.s = 'o';
     tiro.estaAtivo = FALSE;
+    tiro.numeroDeTiros = 0;
+    tiro.numeroDeTirosErrados = 0;
 
     return tiro;
 }
@@ -724,6 +784,7 @@ tTiro InicializaTiro() {
 tTiro EfetuaTiro(tJogador jogador, tTiro tiro) {
     if (tiro.estaAtivo == FALSE) {
         tiro.estaAtivo = TRUE;
+        tiro.numeroDeTiros++;
         tiro.x = jogador.x;
         tiro.y = jogador.y - 2;
     }
@@ -731,12 +792,21 @@ tTiro EfetuaTiro(tJogador jogador, tTiro tiro) {
 }
 
 tTiro MoveTiro(tTiro tiro) {
-    if (tiro.estaAtivo) {
+    if (tiro.estaAtivo == TRUE) {
         if (tiro.y - 1 < 1) {
             tiro.estaAtivo = FALSE;
+            tiro.numeroDeTirosErrados++;
         } else {
             tiro.y--;
         }
     }
     return tiro;
+}
+
+int NumeroDeTiros(tTiro tiro) {
+    return tiro.numeroDeTiros;
+}
+
+int NumeroDeTirosErrados(tTiro tiro) {
+    return tiro.numeroDeTirosErrados;
 }
