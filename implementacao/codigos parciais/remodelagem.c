@@ -14,7 +14,7 @@
 #define QTD_FILEIRAS        3
 #define MAX_INIMIGOS        100     //Qtd maxima de inimigos possiveis, tendo 3 fileiras e largura maxima 100
 
-#define MOV_ESQUERDA        'a'
+#define ESQUERDA        'a'
 #define MOV_DIREITA         'd'
 #define ATIRAR              ' '
 #define PASSAR_A_VEZ        's'
@@ -67,8 +67,6 @@ typedef struct {
 tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo);
 
 void ImprimeTela(tGrid tela);
-
-int Largura(tGrid grid);
 
 
 
@@ -389,7 +387,7 @@ tJogo RealizaJogo(tJogo jogo) {
 }
 
 tJogo RealizaJogada(tJogo jogo, char jogada) {
-    if (jogada == MOV_ESQUERDA || jogada == MOV_DIREITA || jogada == PASSAR_A_VEZ) {
+    if (jogada == ESQUERDA || jogada == MOV_DIREITA || jogada == PASSAR_A_VEZ) {
         jogo.jogador = MoveJogador(jogo.mapa, jogo.jogador, jogada);
     } else if (jogada == ATIRAR) {
         jogo.tiro = EfetuaTiro(jogo.jogador, jogo.tiro);
@@ -447,7 +445,7 @@ int ColunaJogador(tJogador jogador) {
 }
 
 tJogador MoveJogador(tGrid mapa, tJogador jogador, char movimento) {
-    if (movimento == MOV_ESQUERDA) {
+    if (movimento == ESQUERDA) {
         if (jogador.x - 2 > 0) {
             jogador.x--;
         } else {
@@ -506,9 +504,6 @@ void ImprimeTela(tGrid tela) {
     }
 }
 
-int Largura(tGrid grid) {
-    return grid.largura;
-}
 
 
 

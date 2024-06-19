@@ -412,7 +412,7 @@ tMapa InicializaInimigosNoMapa(tMapa mapa, char diretorio[]) {
 }
 
 tMapa RealizaJogada(tMapa mapa, char jogada) {
-    if (jogada == MOV_ESQUERDA || jogada == MOV_DIREITA || jogada == PASSAR_A_VEZ) {
+    if (jogada == ESQUERDA || jogada == MOV_DIREITA || jogada == PASSAR_A_VEZ) {
         mapa = MoveJogador(mapa, mapa.jogador, jogada);
     } else if (jogada == ATIRAR) {
         mapa.tiro = EfetuaTiro(mapa.jogador, mapa.tiro);
@@ -425,7 +425,7 @@ tMapa RealizaJogada(tMapa mapa, char jogada) {
 }
 
 tMapa MoveJogador(tMapa mapa, tJogador jogador, char movimento) {
-    if (movimento == MOV_ESQUERDA) {
+    if (movimento == ESQUERDA) {
         if (jogador.x - 2 > 0) {
             jogador.x--;
         } else {
