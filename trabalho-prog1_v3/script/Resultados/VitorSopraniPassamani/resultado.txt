@@ -1,0 +1,8 @@
+Arquivos Esperados Corretos: 0 de 1
+Pastas Compiladas Corretamente: 1 de 1 
+Pastas Linkadas Corretamente: 1 de 1
+Teste completo
+  - Resultados corretos: 26 de 156
+Nota de VitorSopraniPassamani para o teste completo: 1.32
+Nota de VitorSopraniPassamani: 0+(1.32)
+Nota de VitorSopraniPassamani: 1.32
