@@ -385,7 +385,7 @@ tJogo RealizaJogo(tJogo jogo) {
     char jogada;
 
     while (TRUE) {
-        system("clear");
+        //system("clear");
         jogo = AtualizaTela(jogo);
         printf("Pontos: %d | Iteracoes: %d\n", jogo.pontos, jogo.iteracao);
         ImprimeTela(jogo.tela);

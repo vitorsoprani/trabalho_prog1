@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MODO_DEBUG          0
-
 #define TRUE                1
 #define FALSE               0
 
@@ -35,13 +33,27 @@
 typedef struct {
     int largura;
     int altura;
+    int grid[ALTURA_MAX_MAPA][LARGURA_MAX_MAPA];
+}tGridInt;
+
+tGridInt InicializaHeatMap(int largura, int altura);
+
+void GeraHeatMap(tGridInt heatMap, char diretorio[]);
+
+
+
+
+
+typedef struct {
+    int largura;
+    int altura;
     char grid[ALTURA_MAX_MAPA][LARGURA_MAX_MAPA];
-}tGrid;
+}tGridChar;
 
 /*Cria o desenho do mapa*/
-tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo);
+tGridChar InicializaMapa(int largura, int altura, int alturaMaxInimigo);
 
-void ImprimeTela(tGrid tela);
+void ImprimeTela(tGridChar tela);
 
 
 
@@ -77,10 +89,10 @@ tInimigo InicializaInimigo(int x, int y, char diretorio[], int fileira, int indi
 tInimigo LeFramesInimigo(tInimigo inimigo);
 
 /*Move todos os inimgos do vetor e muda a direção caso necessário*/
-void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGrid mapa);
+void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGridChar mapa);
 
 /*Percorre o vetor de inimigos e retorna TRUE caso haja alguma colisão com a parede e FALSE caso contrario*/
-int ChecaColisaoInimigosParede(tInimigo inimigos[], int qtdInimigos, tGrid mapa);
+int ChecaColisaoInimigosParede(tInimigo inimigos[], int qtdInimigos, tGridChar mapa);
 
 int NumeroDeDescidas(tInimigo inimigo);
 
@@ -107,7 +119,7 @@ int LinhaJogador(tJogador jogador);
 /*Retorna a coluna do jogador*/
 int ColunaJogador(tJogador jogador);
 
-tJogador MoveJogador(tGrid mapa, tJogador jogador, char movimento);
+tJogador MoveJogador(tGridChar mapa, tJogador jogador, char movimento);
 
 int NumeroDeMovimentos(tJogador tJogador);
 
@@ -142,8 +154,9 @@ int NumeroDeTirosErrados(tTiro tiro);
 
 
 typedef struct {
-    tGrid mapa;
-    tGrid tela;
+    tGridChar mapa;
+    tGridChar tela;
+    tGridInt heatMap;
 
     tJogador jogador;
 
@@ -160,19 +173,21 @@ typedef struct {
 /*Faz as devidas inicializações e gera o codigo*/
 tJogo InicializaJogo(char diretorio[]);
 
-tJogo DesenhaMapaNaTela(tJogo jogo, tGrid tela, tGrid mapa);
+tJogo DesenhaMapaNaTela(tJogo jogo, tGridChar tela, tGridChar mapa);
 
-tJogo DesenhaTiroNaTela(tJogo jogo, tGrid tela, tTiro tiro);
+tJogo AtualizaHeatMap(tJogo jogo, tGridInt heatMap, tTiro tiro, tJogador jogador);
+
+tJogo DesenhaTiroNaTela(tJogo jogo, tGridChar tela, tTiro tiro);
 
 /*Não são checados casos de sobreposição nem colisões.
 Considera-se que essas verificações são feitas na função de movimentar o jogador*/
-tJogo DesenhaJogadorNaTela(tJogo jogo, tGrid tela, tJogador jogador);
+tJogo DesenhaJogadorNaTela(tJogo jogo, tGridChar tela, tJogador jogador);
 
-tJogo DesenhaInimigosNaTela(tJogo jogo, tGrid tela, tInimigo inimigos[]);
+tJogo DesenhaInimigosNaTela(tJogo jogo, tGridChar tela, tInimigo inimigos[]);
 
 tJogo AtualizaTela(tJogo jogo);
 
-void GeraArquivoInicializacao(tGrid tela, tJogador jogador, char diretorio[]);
+void GeraArquivoInicializacao(tGridChar tela, tJogador jogador, char diretorio[]);
 
 tJogo RealizaJogo(tJogo jogo);
 
@@ -214,6 +229,8 @@ int main(int argc, char* argv[]) {
 
     GeraEstatisticas(jogo, diretorio);
 
+    GeraHeatMap(jogo.heatMap, diretorio);
+
     return 0;
 }
 
@@ -247,29 +264,25 @@ tJogo InicializaJogo(char diretorio[]) {
     int alturaMapa;
 
     fscanf(mapa_txt, "%d %d\n", &larguraMapa, &alturaMapa);
-    if (MODO_DEBUG) printf("->Largua e altura do mapa: %d %d.\n", larguraMapa, alturaMapa);
 
     jogo.jogador = InicializaJogador(mapa_txt);
-    if (MODO_DEBUG) printf("->Jogador inicializado.\n");
 
     jogo.alturaMaxInimigos = LinhaJogador(jogo.jogador) - 2;
 
     jogo.mapa = InicializaMapa(larguraMapa, alturaMapa, jogo.alturaMaxInimigos);
-    if (MODO_DEBUG) printf("->Mapa inicializado.\n");
+
+    jogo.heatMap = InicializaHeatMap(larguraMapa, alturaMapa);
 
     //Inicialmente  não tem problema serem iguais. É mais conveniente do que criar outra função
     jogo.tela = jogo.mapa;
-    if (MODO_DEBUG) printf("->Tela Inicializada.\n");
 
 
     jogo.qtdInimigos = InicializaInimigos(jogo.inimigos, mapa_txt, diretorio);
-    if (MODO_DEBUG) printf("->Todos inmigos inicializados.\n");
     //    jogo.tiro = InicializaTiro();
 
     jogo.tiro = InicializaTiro();
 
     jogo = AtualizaTela(jogo);
-    if (MODO_DEBUG) printf("->Tela Atualizada\n");
 
     GeraArquivoInicializacao(jogo.tela, jogo.jogador, diretorio);
 
@@ -277,7 +290,7 @@ tJogo InicializaJogo(char diretorio[]) {
     return jogo;
 }
 
-tJogo DesenhaMapaNaTela(tJogo jogo, tGrid tela, tGrid mapa) {
+tJogo DesenhaMapaNaTela(tJogo jogo, tGridChar tela, tGridChar mapa) {
 
     for (int i = 0; i < tela.altura + 2; i++) {
         for (int j = 0; j < tela.largura + 2; j++) {
@@ -287,6 +300,25 @@ tJogo DesenhaMapaNaTela(tJogo jogo, tGrid tela, tGrid mapa) {
 
     jogo.tela = tela;
 
+    return jogo;
+}
+
+tJogo AtualizaHeatMap(tJogo jogo, tGridInt heatMap, tTiro tiro, tJogador jogador) {
+    if (tiro.estaAtivo) {
+        if (heatMap.grid[tiro.y-1][tiro.x-1] < 999) {
+            heatMap.grid[tiro.y-1][tiro.x-1]++;
+        }
+    }
+
+    for (int i = -1; i <= 1; i++) {
+        for (int j = -1; j <= 1; j++) {
+            if (heatMap.grid[jogador.y + i-1][jogador.x + j-1] < 999) {
+                heatMap.grid[jogador.y + i-1][jogador.x + j-1]++;
+            }
+        }
+    }
+
+    jogo.heatMap = heatMap;
     return jogo;
 }
 
@@ -302,7 +334,7 @@ tJogo AtualizaTela(tJogo jogo) {
     return jogo;
 }
 
-tJogo DesenhaTiroNaTela(tJogo jogo, tGrid tela, tTiro tiro) {
+tJogo DesenhaTiroNaTela(tJogo jogo, tGridChar tela, tTiro tiro) {
 
     if (tiro.estaAtivo) {
         tela.grid[tiro.y][tiro.x] = tiro.s;
@@ -313,7 +345,7 @@ tJogo DesenhaTiroNaTela(tJogo jogo, tGrid tela, tTiro tiro) {
     return jogo;
 }
 
-tJogo DesenhaJogadorNaTela(tJogo jogo, tGrid tela, tJogador jogador) {
+tJogo DesenhaJogadorNaTela(tJogo jogo, tGridChar tela, tJogador jogador) {
     //laço que percorre todas as posições do desenho do jogador
     int k = -1;
     for (int i = 0; i < TAM_JOGADOR; i++) {
@@ -325,14 +357,12 @@ tJogo DesenhaJogadorNaTela(tJogo jogo, tGrid tela, tJogador jogador) {
         k++;
     }
 
-    if (MODO_DEBUG) printf("->Jogador desenhado no grid da tela.\n");
-
     jogo.tela = tela;
 
     return jogo;
 }
 
-tJogo DesenhaInimigosNaTela(tJogo jogo, tGrid tela, tInimigo inimigos[]) {
+tJogo DesenhaInimigosNaTela(tJogo jogo, tGridChar tela, tInimigo inimigos[]) {
     //laço que percorre todos os inimigos do vetor
     for (int x = 0; x < jogo.qtdInimigos; x++) {
         if (inimigos[x].estaVivo) {
@@ -354,10 +384,6 @@ tJogo DesenhaInimigosNaTela(tJogo jogo, tGrid tela, tInimigo inimigos[]) {
                 }
                 k++;
             }
-            if (MODO_DEBUG) {
-                printf("->Inimigo %d desenhado no grid da tela:\n", x);
-                ImprimeTela(tela);
-            }
         }
     }
 
@@ -366,7 +392,7 @@ tJogo DesenhaInimigosNaTela(tJogo jogo, tGrid tela, tInimigo inimigos[]) {
     return jogo;
 }
 
-void GeraArquivoInicializacao(tGrid tela, tJogador jogador, char diretorio[]) {
+void GeraArquivoInicializacao(tGridChar tela, tJogador jogador, char diretorio[]) {
     char diretorioSaida[TAM_MAX_CAMINHO];
     FILE* arquivoInicializacao;
 
@@ -374,7 +400,6 @@ void GeraArquivoInicializacao(tGrid tela, tJogador jogador, char diretorio[]) {
     strcat(diretorioSaida, "/saida/inicializacao.txt");
     arquivoInicializacao = fopen(diretorioSaida, "w");
 
-    if (MODO_DEBUG) printf("->inicializacao.txt criado.\n");
     //Desenha a tela em "inicializacao.txt"
 
     for (int i = 0; i < tela.altura + 2; i++) {
@@ -406,6 +431,7 @@ tJogo RealizaJogo(tJogo jogo) {
     while (TRUE) {
         //system("clear");
         jogo = AtualizaTela(jogo);
+        jogo = AtualizaHeatMap(jogo, jogo.heatMap, jogo.tiro, jogo.jogador);
         printf("Pontos: %d | Iteracoes: %d\n", jogo.pontos, jogo.iteracao);
         ImprimeTela(jogo.tela);
 
@@ -524,7 +550,6 @@ tJogador InicializaJogador(FILE* config) {
     tJogador jogador;
 
     fscanf(config, "(%d %d)\n", &jogador.x, &jogador.y);
-    if (MODO_DEBUG) printf("->Posicao incial do jogador: (%d %d)\n", jogador.x, jogador.y);
 
     jogador.s = 'M';
 
@@ -539,17 +564,6 @@ tJogador InicializaJogador(FILE* config) {
         }
     }
 
-    if (MODO_DEBUG) {
-        printf("->Desenho do Jogador:\n");
-
-        for (int i = 0; i < TAM_JOGADOR; i++) {
-            printf("\t");
-            for (int j = 0; j < TAM_JOGADOR; j++) {
-                printf("%c", jogador.desenho[i][j]);
-            }
-            printf("\n");
-        }
-    }
 
     jogador.numeroDeMovimentos = 0;
 
@@ -564,7 +578,7 @@ int ColunaJogador(tJogador jogador) {
     return jogador.x;
 }
 
-tJogador MoveJogador(tGrid mapa, tJogador jogador, char movimento) {
+tJogador MoveJogador(tGridChar mapa, tJogador jogador, char movimento) {
     if (movimento == MOV_ESQUERDA) {
         if (jogador.x - 2 > 0) {
             jogador.x--;
@@ -594,8 +608,8 @@ int NumeroDeMovimentos(tJogador tJogador) {
 
 
 
-tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo) {
-    tGrid mapa;
+tGridChar InicializaMapa(int largura, int altura, int alturaMaxInimigo) {
+    tGridChar mapa;
 
     mapa.largura = largura;
     mapa.altura = altura;
@@ -621,12 +635,47 @@ tGrid InicializaMapa(int largura, int altura, int alturaMaxInimigo) {
     return mapa;
 }
 
-void ImprimeTela(tGrid tela) {
+void ImprimeTela(tGridChar tela) {
     for (int i = 0; i < tela.altura + 2; i++) {
         for (int j = 0; j < tela.largura + 2; j++) {
             printf("%c", tela.grid[i][j]);
         }
         printf("\n");
+    }
+}
+
+
+
+
+
+tGridInt InicializaHeatMap(int largura, int altura) {
+    tGridInt heatMap;
+    heatMap.largura = largura;
+    heatMap.altura = altura;
+
+    for (int i = 0; i < heatMap.altura; i++) {
+        for (int j = 0; j < heatMap.largura; j++) {
+            heatMap.grid[i][j] = 0;
+        }
+    }
+
+    return heatMap;
+}
+
+void GeraHeatMap(tGridInt heatMap, char diretorio[]) {
+
+    char diretorioSaida[TAM_MAX_CAMINHO];
+    FILE* arquivoHeatMap;
+
+    strcpy(diretorioSaida, diretorio);
+    strcat(diretorioSaida, "/saida/heatmap.txt");
+    arquivoHeatMap = fopen(diretorioSaida, "w");
+
+    for (int i = 0; i < heatMap.altura; i++) {
+        for (int j = 0; j < heatMap.largura; j++) {
+            fprintf(arquivoHeatMap, "%3d ", heatMap.grid[i][j]);
+        }
+        fprintf(arquivoHeatMap, "\n");
     }
 }
 
@@ -680,18 +729,11 @@ tInimigo InicializaInimigo(int x, int y, char diretorio[], int fileira, int indi
 
     inimigo.numeroDeDescidas = 0;
 
-    if (MODO_DEBUG) printf("Lendo frames do inimigo.\n");
     inimigo = LeFramesInimigo(inimigo);
 
     inimigo.fileira = fileira;
     inimigo.indice = indice;
 
-    if (MODO_DEBUG) {
-        printf("->Inimigo inicializado:\n");
-        printf("\tFileira: %d\n", inimigo.fileira);
-        printf("\tIndice: %d\n", inimigo.indice);
-        printf("\tPosicao: (%d %d)\n", inimigo.x, inimigo.y);
-    }
 
     return inimigo;
 }
@@ -716,22 +758,12 @@ tInimigo LeFramesInimigo(tInimigo inimigo) {
     }
 
 
-    if (MODO_DEBUG) {
-        printf("  Frame 0:\n");
-        for (int i = 0; i < TAM_INIMIGO; i++) {
-            printf("\t");
-            for (int j = 0; j < TAM_INIMIGO; j++) {
-                printf("%c", inimigo.frames[0][i][j]);
-            }
-            printf("\n");
-        }
-    }
 
     fclose(inimigo.config);
     return inimigo;
 }
 
-void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGrid mapa) {
+void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGridChar mapa) {
     for (int i = 0; i < qtdInimigos; i++) {
         if (inimigos[i].direcao == DIREITA) {
             inimigos[i].x++;
@@ -754,7 +786,7 @@ void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGrid mapa) {
     }
 }
 
-int ChecaColisaoInimigosParede(tInimigo inimigos[], int qtdInimigos, tGrid mapa) {
+int ChecaColisaoInimigosParede(tInimigo inimigos[], int qtdInimigos, tGridChar mapa) {
     for (int i = 0; i < qtdInimigos; i++) {
         if ((inimigos[i].x - 1 == 0 || inimigos[i].x + 1 > mapa.largura) && inimigos[i].estaVivo) {
             return TRUE;
@@ -810,3 +842,4 @@ int NumeroDeTiros(tTiro tiro) {
 int NumeroDeTirosErrados(tTiro tiro) {
     return tiro.numeroDeTirosErrados;
 }
+
