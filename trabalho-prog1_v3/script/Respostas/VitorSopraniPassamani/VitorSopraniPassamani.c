@@ -579,7 +579,7 @@ void GeraEstatisticas(tJogo jogo, char diretorio[]) {
 tJogador InicializaJogador(FILE* config) {
     tJogador jogador;
 
-    fscanf(config, "(%d %d)\n", &jogador.x, &jogador.y);
+    fscanf(config, "(%d %d)%*c", &jogador.x, &jogador.y);
 
     jogador.s = 'M';
 
