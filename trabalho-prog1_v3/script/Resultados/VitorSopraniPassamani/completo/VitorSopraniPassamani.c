@@ -77,6 +77,9 @@ typedef struct {
     int direcao;
 
     int numeroDeDescidas;
+
+    int linhaMorte;
+    int iteracaoMorte;
 }tInimigo;
 
 /*Inicializa cada inimigo no vetor de inimigos e retorna a quantidade de inimigos*/
@@ -95,6 +98,14 @@ void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGridChar mapa);
 int ChecaColisaoInimigosParede(tInimigo inimigos[], int qtdInimigos, tGridChar mapa);
 
 int NumeroDeDescidas(tInimigo inimigo);
+
+void OrdenaInimigos(tInimigo inimigos[], int qtdInimigos);
+
+/*Retorna true caso o inimigo 1 deva aparecer primeiro que o inimigo 2 no ranking e false caso contrario*/
+int AparecePrimeiroQue(tInimigo inimigo1, tInimigo inimigo2);
+
+void GeraRanking(tInimigo inimigos[], int qtdInimigos, char diretorio[]);
+
 
 
 
@@ -231,6 +242,10 @@ int main(int argc, char* argv[]) {
 
     GeraHeatMap(jogo.heatMap, diretorio);
 
+    OrdenaInimigos(jogo.inimigos, jogo.qtdInimigos);
+
+    GeraRanking(jogo.inimigos, jogo.qtdInimigos, diretorio);
+
     return 0;
 }
 
@@ -305,15 +320,18 @@ tJogo DesenhaMapaNaTela(tJogo jogo, tGridChar tela, tGridChar mapa) {
 
 tJogo AtualizaHeatMap(tJogo jogo, tGridInt heatMap, tTiro tiro, tJogador jogador) {
     if (tiro.estaAtivo) {
-        if (heatMap.grid[tiro.y-1][tiro.x-1] < 999) {
-            heatMap.grid[tiro.y-1][tiro.x-1]++;
+        if (heatMap.grid[tiro.y - 1][tiro.x - 1] < 999) {
+            heatMap.grid[tiro.y - 1][tiro.x - 1]++;
+            //Tanto o jogador qunto o tiro devem ter uma "defasagem" de -1 nas coordenadas,
+            //pois essas são referentes ao mapa (considerando as molduras) e não ao heatmap (que não tem molduras) 
         }
     }
 
+    //Laço que percorre todas as posições do jogador (em relação ao centro)
     for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
-            if (heatMap.grid[jogador.y + i-1][jogador.x + j-1] < 999) {
-                heatMap.grid[jogador.y + i-1][jogador.x + j-1]++;
+            if (heatMap.grid[jogador.y + i - 1][jogador.x + j - 1] < 999) {
+                heatMap.grid[jogador.y + i - 1][jogador.x + j - 1]++;
             }
         }
     }
@@ -479,6 +497,8 @@ tJogo ColisaoInimigosTiro(tJogo jogo, tInimigo inimigos[], tTiro tiro) {
         if (ColidiuInimigoTiro(inimigos[i], tiro)) {
             tiro.estaAtivo = FALSE;
             inimigos[i].estaVivo = FALSE;
+            inimigos[i].iteracaoMorte = jogo.iteracao;
+            inimigos[i].linhaMorte = jogo.mapa.altura - tiro.y + 1;
             jogo.tiro = tiro;
             jogo.inimigos[i] = inimigos[i];
             jogo.pontos += inimigos[i].x * (jogo.mapa.altura - inimigos[i].y); //CONSERTAR ACESSO INDEVIDO 
@@ -723,6 +743,8 @@ tInimigo InicializaInimigo(int x, int y, char diretorio[], int fileira, int indi
 
     inimigo.estaVivo = TRUE;
     inimigo.direcao = DIREITA;
+    inimigo.iteracaoMorte = 0;
+    inimigo.linhaMorte = 0;
 
     inimigo.x = x;
     inimigo.y = y;
@@ -799,6 +821,53 @@ int NumeroDeDescidas(tInimigo inimigo) {
     return inimigo.numeroDeDescidas;
 }
 
+void OrdenaInimigos(tInimigo inimigos[], int qtdInimigos) {
+    for (int i = 0; i < qtdInimigos - 1; i++) {
+        int idxMenorRelativo;//menor valor do vetor depoir de i+1
+        idxMenorRelativo = i + 1;
+
+        //encontra o menor valor do vetor (sem contar o i)
+        for (int j = i + 2; j < qtdInimigos; j++) {
+            if (AparecePrimeiroQue(inimigos[j], inimigos[idxMenorRelativo])) {
+                idxMenorRelativo = j;
+            }
+        }
+        if (AparecePrimeiroQue(inimigos[idxMenorRelativo], inimigos[i])) {
+            //troca de lugar
+            tInimigo aux;
+            aux = inimigos[idxMenorRelativo];
+            inimigos[idxMenorRelativo] = inimigos[i];
+            inimigos[i] = aux;
+        }
+    }
+}
+
+int AparecePrimeiroQue(tInimigo inimigo1, tInimigo inimigo2) {
+    if (inimigo1.linhaMorte == inimigo2.linhaMorte) {
+        return inimigo1.iteracaoMorte < inimigo2.iteracaoMorte;
+    }
+
+    return inimigo1.linhaMorte < inimigo2.linhaMorte;
+}
+
+void GeraRanking(tInimigo inimigos[], int qtdInimigos, char diretorio[]) {
+    char diretorioSaida[TAM_MAX_CAMINHO];
+    FILE* arquivoRanking;
+
+    strcpy(diretorioSaida, diretorio);
+    strcat(diretorioSaida, "/saida/ranking.txt");
+    arquivoRanking = fopen(diretorioSaida, "w");
+
+    fprintf(arquivoRanking, "indice,fileira,linha,iteracao\n");
+
+    for (int i = 0; i < qtdInimigos; i++) {
+        if (inimigos[i].estaVivo == FALSE) {
+            fprintf(arquivoRanking, "%d,%d,%d,%d\n", inimigos[i].indice, inimigos[i].fileira, inimigos[i].linhaMorte, inimigos[i].iteracaoMorte);
+        }
+
+    }
+    fclose(arquivoRanking);
+}
 
 
 
