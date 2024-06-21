@@ -92,10 +92,10 @@ tInimigo InicializaInimigo(int x, int y, char diretorio[], int fileira, int indi
 tInimigo LeFramesInimigo(tInimigo inimigo);
 
 /*Move todos os inimgos do vetor e muda a direção caso necessário*/
-void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGridChar mapa);
+void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGridChar mapa, FILE* resumo, int iteracao);
 
 /*Percorre o vetor de inimigos e retorna TRUE caso haja alguma colisão com a parede e FALSE caso contrario*/
-int ChecaColisaoInimigosParede(tInimigo inimigos[], int qtdInimigos, tGridChar mapa);
+int ChecaColisaoInimigosParede(tInimigo inimigos[], int qtdInimigos, tGridChar mapa, FILE* resumo, int iteracao);
 
 int NumeroDeDescidas(tInimigo inimigo);
 
@@ -471,7 +471,7 @@ tJogo RealizaJogo(tJogo jogo, char diretorio[]) {
 
         jogo = ColisaoInimigosTiro(jogo, jogo.inimigos, jogo.tiro, arquivoResumo);
 
-        MoveInimigos(jogo.inimigos, jogo.qtdInimigos, jogo.mapa);
+        MoveInimigos(jogo.inimigos, jogo.qtdInimigos, jogo.mapa, arquivoResumo, jogo.iteracao);
 
         jogo.tiro = MoveTiro(jogo.tiro);
 
@@ -795,7 +795,7 @@ tInimigo LeFramesInimigo(tInimigo inimigo) {
     return inimigo;
 }
 
-void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGridChar mapa) {
+void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGridChar mapa, FILE* resumo, int iteracao) {
     for (int i = 0; i < qtdInimigos; i++) {
         if (inimigos[i].direcao == DIREITA) {
             inimigos[i].x++;
@@ -803,7 +803,7 @@ void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGridChar mapa) {
             inimigos[i].x--;
         }
     }
-    if (ChecaColisaoInimigosParede(inimigos, qtdInimigos, mapa) == TRUE) {
+    if (ChecaColisaoInimigosParede(inimigos, qtdInimigos, mapa, resumo, iteracao) == TRUE) {
         for (int i = 0; i < qtdInimigos; i++) {
             if (inimigos[i].direcao == DIREITA) {
                 inimigos[i].direcao = ESQUERDA;
@@ -818,9 +818,15 @@ void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGridChar mapa) {
     }
 }
 
-int ChecaColisaoInimigosParede(tInimigo inimigos[], int qtdInimigos, tGridChar mapa) {
+int ChecaColisaoInimigosParede(tInimigo inimigos[], int qtdInimigos, tGridChar mapa, FILE* resumo, int iteracao) {
     for (int i = 0; i < qtdInimigos; i++) {
-        if ((inimigos[i].x - 1 == 0 || inimigos[i].x + 1 > mapa.largura) && inimigos[i].estaVivo) {
+        if (inimigos[i].x - 1 == 0 && inimigos[i].estaVivo) {
+            fprintf(resumo, "[%d] Inimigo de indice %d da fileira %d colidiu na lateral esquerda.\n",
+                iteracao, inimigos[i].indice, inimigos[i].fileira);
+            return TRUE;
+        } else if (inimigos[i].x + 1 > mapa.largura && inimigos[i].estaVivo) {
+            fprintf(resumo, "[%d] Inimigo de indice %d da fileira %d colidiu na lateral direita.\n",
+                iteracao, inimigos[i].indice, inimigos[i].fileira);
             return TRUE;
         }
     }

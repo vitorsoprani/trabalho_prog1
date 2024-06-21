@@ -1,0 +1,6 @@
+[5] Inimigo de indice 1 da fileira 1 colidiu na lateral direita.
+[16] Inimigo de indice 1 da fileira 1 colidiu na lateral esquerda.
+[27] Inimigo de indice 1 da fileira 1 colidiu na lateral direita.
+[38] Inimigo de indice 1 da fileira 1 colidiu na lateral esquerda.
+[49] Inimigo de indice 1 da fileira 1 colidiu na lateral direita.
+[60] Inimigo de indice 1 da fileira 1 colidiu na lateral esquerda.

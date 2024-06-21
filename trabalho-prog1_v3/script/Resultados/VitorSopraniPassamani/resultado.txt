@@ -2,7 +2,7 @@ Arquivos Esperados Corretos: 0 de 1
 Pastas Compiladas Corretamente: 1 de 1 
 Pastas Linkadas Corretamente: 1 de 1
 Teste completo
-  - Resultados corretos: 127 de 156
-Nota de VitorSopraniPassamani para o teste completo: 9.46
-Nota de VitorSopraniPassamani: 0+(9.46)
-Nota de VitorSopraniPassamani: 9.46
+  - Resultados corretos: 133 de 156
+Nota de VitorSopraniPassamani para o teste completo: 9.68
+Nota de VitorSopraniPassamani: 0+(9.68)
+Nota de VitorSopraniPassamani: 9.68
