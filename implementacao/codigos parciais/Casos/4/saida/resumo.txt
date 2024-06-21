@@ -1,2 +1,46 @@
-[5] Inimigo de indice 1 da fileira 1 colidiu na lateral direita.
-[8] Inimigo de indice 1 da fileira 1 foi atingido na posicao (10 4).
+[@] Inimigo de indice 1 da fileira 1 colidiu na lateral direita.
+[@] Inimigo de indice 1 da fileira 1 colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Inimigo de indice 1 da fileira 1 colidiu na lateral direita.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Inimigo de indice 1 da fileira 1 colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Inimigo de indice 1 da fileira 1 colidiu na lateral direita.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.
+[@] Inimigo de indice 1 da fileira 1 colidiu na lateral esquerda.
+[@] Jogador colidiu na lateral esquerda.

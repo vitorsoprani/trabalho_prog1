@@ -200,13 +200,13 @@ tJogo AtualizaTela(tJogo jogo);
 
 void GeraArquivoInicializacao(tGridChar tela, tJogador jogador, char diretorio[]);
 
-tJogo RealizaJogo(tJogo jogo);
+tJogo RealizaJogo(tJogo jogo, char diretorio[]);
 
 tJogo RealizaJogada(tJogo jogo, char jogada);
 
 /*Percorre o vetor de inimigos checando se cada um deles colidiu com o tiro
 e atualizando os status quando necessário*/
-tJogo ColisaoInimigosTiro(tJogo jogo, tInimigo inimigos[], tTiro tiro);
+tJogo ColisaoInimigosTiro(tJogo jogo, tInimigo inimigos[], tTiro tiro, FILE* resumo);
 
 /*Checa se um dado inimigo colidiu com um tiro*/
 int ColidiuInimigoTiro(tInimigo inimigo, tTiro tiro);
@@ -236,7 +236,7 @@ int main(int argc, char* argv[]) {
 
     jogo = InicializaJogo(diretorio);
 
-    jogo = RealizaJogo(jogo);
+    jogo = RealizaJogo(jogo, diretorio);
 
     GeraEstatisticas(jogo, diretorio);
 
@@ -433,7 +433,7 @@ void GeraArquivoInicializacao(tGridChar tela, tJogador jogador, char diretorio[]
     fclose(arquivoInicializacao);
 }
 
-tJogo RealizaJogo(tJogo jogo) {
+tJogo RealizaJogo(tJogo jogo, char diretorio[]) {
     /*
         #Verifica condiçõesa de vitoria/derrota;
         #Verifica colisao do tiro com o inimigo;
@@ -444,6 +444,13 @@ tJogo RealizaJogo(tJogo jogo) {
             e só deve ser efetuado um novo disparo caso não haja tiros ativos no mapa.
         #imprimir na saída padrão os pontos, as iterações e o mapa;
     */
+    char diretorioSaida[TAM_MAX_CAMINHO];
+    FILE* arquivoResumo;
+
+    strcpy(diretorioSaida, diretorio);
+    strcat(diretorioSaida, "/saida/resumo.txt");
+    arquivoResumo = fopen(diretorioSaida, "w");
+
     char jogada;
 
     while (TRUE) {
@@ -462,7 +469,7 @@ tJogo RealizaJogo(tJogo jogo) {
             break;
         }
 
-        jogo = ColisaoInimigosTiro(jogo, jogo.inimigos, jogo.tiro);
+        jogo = ColisaoInimigosTiro(jogo, jogo.inimigos, jogo.tiro, arquivoResumo);
 
         MoveInimigos(jogo.inimigos, jogo.qtdInimigos, jogo.mapa);
 
@@ -476,6 +483,7 @@ tJogo RealizaJogo(tJogo jogo) {
         jogo = RealizaJogada(jogo, jogada);
     }
 
+    fclose(arquivoResumo);
     return jogo;
 }
 
@@ -492,7 +500,7 @@ tJogo RealizaJogada(tJogo jogo, char jogada) {
     return jogo;
 }
 
-tJogo ColisaoInimigosTiro(tJogo jogo, tInimigo inimigos[], tTiro tiro) {
+tJogo ColisaoInimigosTiro(tJogo jogo, tInimigo inimigos[], tTiro tiro, FILE* resumo) {
     for (int i = 0; i < jogo.qtdInimigos; i++) {
         if (ColidiuInimigoTiro(inimigos[i], tiro)) {
             tiro.estaAtivo = FALSE;
