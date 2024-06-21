@@ -507,6 +507,8 @@ tJogo ColisaoInimigosTiro(tJogo jogo, tInimigo inimigos[], tTiro tiro, FILE* res
             inimigos[i].estaVivo = FALSE;
             inimigos[i].iteracaoMorte = jogo.iteracao;
             inimigos[i].linhaMorte = jogo.mapa.altura - tiro.y + 1;
+            fprintf(resumo, "[%d] Inimigo de indice %d da fileira %d foi atingido na posicao (%d %d).\n",
+                jogo.iteracao, inimigos[i].indice, inimigos[i].fileira, tiro.x, tiro.y);
             jogo.tiro = tiro;
             jogo.inimigos[i] = inimigos[i];
             jogo.pontos += inimigos[i].x * (jogo.mapa.altura - inimigos[i].y); //CONSERTAR ACESSO INDEVIDO 

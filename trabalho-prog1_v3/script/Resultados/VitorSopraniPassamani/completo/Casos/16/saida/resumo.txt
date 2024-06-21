@@ -1,0 +1,8 @@
+[10] Inimigo de indice 1 da fileira 1 foi atingido na posicao (50 4).
+[25] Inimigo de indice 4 da fileira 3 foi atingido na posicao (34 8).
+[33] Inimigo de indice 3 da fileira 3 foi atingido na posicao (26 11).
+[46] Inimigo de indice 2 da fileira 3 foi atingido na posicao (12 13).
+[51] Inimigo de indice 1 da fileira 3 foi atingido na posicao (8 13).
+[85] Inimigo de indice 2 da fileira 1 foi atingido na posicao (36 9).
+[114] Inimigo de indice 4 da fileira 1 foi atingido na posicao (37 8).
+[179] Inimigo de indice 3 da fileira 1 foi atingido na posicao (44 11).

@@ -1,0 +1,2 @@
+[15] Inimigo de indice 1 da fileira 1 foi atingido na posicao (10 3).
+[36] Inimigo de indice 1 da fileira 3 foi atingido na posicao (13 17).
