@@ -130,7 +130,7 @@ int LinhaJogador(tJogador jogador);
 /*Retorna a coluna do jogador*/
 int ColunaJogador(tJogador jogador);
 
-tJogador MoveJogador(tGridChar mapa, tJogador jogador, char movimento);
+tJogador MoveJogador(tGridChar mapa, tJogador jogador, char movimento, FILE* resumo, int iteracao);
 
 int NumeroDeMovimentos(tJogador tJogador);
 
@@ -202,7 +202,7 @@ void GeraArquivoInicializacao(tGridChar tela, tJogador jogador, char diretorio[]
 
 tJogo RealizaJogo(tJogo jogo, char diretorio[]);
 
-tJogo RealizaJogada(tJogo jogo, char jogada);
+tJogo RealizaJogada(tJogo jogo, char jogada, FILE* resumo);
 
 /*Percorre o vetor de inimigos checando se cada um deles colidiu com o tiro
 e atualizando os status quando necessário*/
@@ -480,16 +480,16 @@ tJogo RealizaJogo(tJogo jogo, char diretorio[]) {
         scanf("%c", &jogada);
         scanf("%*c");
 
-        jogo = RealizaJogada(jogo, jogada);
+        jogo = RealizaJogada(jogo, jogada, arquivoResumo);
     }
 
     fclose(arquivoResumo);
     return jogo;
 }
 
-tJogo RealizaJogada(tJogo jogo, char jogada) {
+tJogo RealizaJogada(tJogo jogo, char jogada, FILE* resumo) {
     if (jogada == MOV_ESQUERDA || jogada == MOV_DIREITA || jogada == PASSAR_A_VEZ) {
-        jogo.jogador = MoveJogador(jogo.mapa, jogo.jogador, jogada);
+        jogo.jogador = MoveJogador(jogo.mapa, jogo.jogador, jogada, resumo, jogo.iteracao);
     } else if (jogada == ATIRAR) {
         jogo.tiro = EfetuaTiro(jogo.jogador, jogo.tiro);
     } else {
@@ -608,18 +608,21 @@ int ColunaJogador(tJogador jogador) {
     return jogador.x;
 }
 
-tJogador MoveJogador(tGridChar mapa, tJogador jogador, char movimento) {
+tJogador MoveJogador(tGridChar mapa, tJogador jogador, char movimento, FILE* resumo, int iteracao) {
     if (movimento == MOV_ESQUERDA) {
         if (jogador.x - 2 > 0) {
             jogador.x--;
             jogador.numeroDeMovimentos++;
         } else {
+            fprintf(resumo, "[%d] Jogador colidiu na lateral esquerda.\n", iteracao);
         }
     } else if (movimento == MOV_DIREITA) {
         if (jogador.x + 2 < mapa.largura + 1) {
             jogador.x++;
             jogador.numeroDeMovimentos++;
         } else {
+            fprintf(resumo, "[%d] Jogador colidiu na lateral direita.\n", iteracao);
+
         }
     } else if (movimento == PASSAR_A_VEZ) {
         //printf("Passou a vez! \n");
@@ -819,18 +822,20 @@ void MoveInimigos(tInimigo inimigos[], int qtdInimigos, tGridChar mapa, FILE* re
 }
 
 int ChecaColisaoInimigosParede(tInimigo inimigos[], int qtdInimigos, tGridChar mapa, FILE* resumo, int iteracao) {
+    int colisao = FALSE;
+
     for (int i = 0; i < qtdInimigos; i++) {
         if (inimigos[i].x - 1 == 0 && inimigos[i].estaVivo) {
             fprintf(resumo, "[%d] Inimigo de indice %d da fileira %d colidiu na lateral esquerda.\n",
                 iteracao, inimigos[i].indice, inimigos[i].fileira);
-            return TRUE;
+            colisao = TRUE;
         } else if (inimigos[i].x + 1 > mapa.largura && inimigos[i].estaVivo) {
             fprintf(resumo, "[%d] Inimigo de indice %d da fileira %d colidiu na lateral direita.\n",
                 iteracao, inimigos[i].indice, inimigos[i].fileira);
-            return TRUE;
+            colisao = TRUE;
         }
     }
-    return FALSE;
+    return colisao;
 }
 
 int NumeroDeDescidas(tInimigo inimigo) {

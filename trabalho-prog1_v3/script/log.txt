@@ -47,24 +47,24 @@ EXECUTANDO O PROGRAMA EM CADA CASO:
  - Resultado para o heatmap.txt: Ok! Peso: 1.0
  - Resultado para o inicializacao.txt: Ok! Peso: 1.0
  - Resultado para o ranking.txt: Ok! Peso: 1.0
- - Resultado para o resumo.txt: Incorreto! Peso: 0.0
- - Nota para o Caso (soma dos pesos): 7.00 (soma total) - 0% (desconto do valgrind) = 7.00 de 8.0 pontos.
+ - Resultado para o resumo.txt: Ok! Peso: 1.0
+ - Nota para o Caso (soma dos pesos): 8.00 (soma total) - 0% (desconto do valgrind) = 8.00 de 8.0 pontos.
  - Pasta completo / Caso 11:
  - Resultado para o saida.txt: Ok! Peso: 3.0
  - Resultado para o estatisticas.txt: Ok! Peso: 1.0
  - Resultado para o heatmap.txt: Ok! Peso: 1.0
  - Resultado para o inicializacao.txt: Ok! Peso: 1.0
  - Resultado para o ranking.txt: Ok! Peso: 1.0
- - Resultado para o resumo.txt: Incorreto! Peso: 0.0
- - Nota para o Caso (soma dos pesos): 7.00 (soma total) - 0% (desconto do valgrind) = 7.00 de 8.0 pontos.
+ - Resultado para o resumo.txt: Ok! Peso: 1.0
+ - Nota para o Caso (soma dos pesos): 8.00 (soma total) - 0% (desconto do valgrind) = 8.00 de 8.0 pontos.
  - Pasta completo / Caso 12:
  - Resultado para o saida.txt: Ok! Peso: 3.0
  - Resultado para o estatisticas.txt: Ok! Peso: 1.0
  - Resultado para o heatmap.txt: Ok! Peso: 1.0
  - Resultado para o inicializacao.txt: Ok! Peso: 1.0
  - Resultado para o ranking.txt: Ok! Peso: 1.0
- - Resultado para o resumo.txt: Incorreto! Peso: 0.0
- - Nota para o Caso (soma dos pesos): 7.00 (soma total) - 0% (desconto do valgrind) = 7.00 de 8.0 pontos.
+ - Resultado para o resumo.txt: Ok! Peso: 1.0
+ - Nota para o Caso (soma dos pesos): 8.00 (soma total) - 0% (desconto do valgrind) = 8.00 de 8.0 pontos.
  - Pasta completo / Caso 13:
  - Resultado para o saida.txt: Ok! Peso: 3.0
  - Resultado para o estatisticas.txt: Ok! Peso: 1.0
@@ -111,24 +111,24 @@ EXECUTANDO O PROGRAMA EM CADA CASO:
  - Resultado para o heatmap.txt: Ok! Peso: 1.0
  - Resultado para o inicializacao.txt: Ok! Peso: 1.0
  - Resultado para o ranking.txt: Ok! Peso: 1.0
- - Resultado para o resumo.txt: Incorreto! Peso: 0.0
- - Nota para o Caso (soma dos pesos): 7.00 (soma total) - 0% (desconto do valgrind) = 7.00 de 8.0 pontos.
+ - Resultado para o resumo.txt: Ok! Peso: 1.0
+ - Nota para o Caso (soma dos pesos): 8.00 (soma total) - 0% (desconto do valgrind) = 8.00 de 8.0 pontos.
  - Pasta completo / Caso 19:
  - Resultado para o saida.txt: Ok! Peso: 3.0
  - Resultado para o estatisticas.txt: Ok! Peso: 1.0
  - Resultado para o heatmap.txt: Ok! Peso: 1.0
  - Resultado para o inicializacao.txt: Ok! Peso: 1.0
  - Resultado para o ranking.txt: Ok! Peso: 1.0
- - Resultado para o resumo.txt: Incorreto! Peso: 0.0
- - Nota para o Caso (soma dos pesos): 7.00 (soma total) - 0% (desconto do valgrind) = 7.00 de 8.0 pontos.
+ - Resultado para o resumo.txt: Ok! Peso: 1.0
+ - Nota para o Caso (soma dos pesos): 8.00 (soma total) - 0% (desconto do valgrind) = 8.00 de 8.0 pontos.
  - Pasta completo / Caso 2:
  - Resultado para o saida.txt: Ok! Peso: 3.0
  - Resultado para o estatisticas.txt: Ok! Peso: 1.0
  - Resultado para o heatmap.txt: Ok! Peso: 1.0
  - Resultado para o inicializacao.txt: Ok! Peso: 1.0
  - Resultado para o ranking.txt: Ok! Peso: 1.0
- - Resultado para o resumo.txt: Incorreto! Peso: 0.0
- - Nota para o Caso (soma dos pesos): 7.00 (soma total) - 0% (desconto do valgrind) = 7.00 de 8.0 pontos.
+ - Resultado para o resumo.txt: Ok! Peso: 1.0
+ - Nota para o Caso (soma dos pesos): 8.00 (soma total) - 0% (desconto do valgrind) = 8.00 de 8.0 pontos.
  - Pasta completo / Caso 20:
  - Resultado para o saida.txt: Ok! Peso: 3.0
  - Resultado para o estatisticas.txt: Ok! Peso: 1.0
@@ -143,8 +143,8 @@ EXECUTANDO O PROGRAMA EM CADA CASO:
  - Resultado para o heatmap.txt: Ok! Peso: 1.0
  - Resultado para o inicializacao.txt: Ok! Peso: 1.0
  - Resultado para o ranking.txt: Ok! Peso: 1.0
- - Resultado para o resumo.txt: Incorreto! Peso: 0.0
- - Nota para o Caso (soma dos pesos): 7.00 (soma total) - 0% (desconto do valgrind) = 7.00 de 8.0 pontos.
+ - Resultado para o resumo.txt: Ok! Peso: 1.0
+ - Nota para o Caso (soma dos pesos): 8.00 (soma total) - 0% (desconto do valgrind) = 8.00 de 8.0 pontos.
  - Pasta completo / Caso 3:
  - Resultado para o saida.txt: Ok! Peso: 3.0
  - Resultado para o estatisticas.txt: Ok! Peso: 1.0
@@ -167,16 +167,16 @@ EXECUTANDO O PROGRAMA EM CADA CASO:
  - Resultado para o heatmap.txt: Ok! Peso: 1.0
  - Resultado para o inicializacao.txt: Ok! Peso: 1.0
  - Resultado para o ranking.txt: Ok! Peso: 1.0
- - Resultado para o resumo.txt: Incorreto! Peso: 0.0
- - Nota para o Caso (soma dos pesos): 7.00 (soma total) - 0% (desconto do valgrind) = 7.00 de 8.0 pontos.
+ - Resultado para o resumo.txt: Ok! Peso: 1.0
+ - Nota para o Caso (soma dos pesos): 8.00 (soma total) - 0% (desconto do valgrind) = 8.00 de 8.0 pontos.
  - Pasta completo / Caso 6:
  - Resultado para o saida.txt: Ok! Peso: 3.0
  - Resultado para o estatisticas.txt: Ok! Peso: 1.0
  - Resultado para o heatmap.txt: Ok! Peso: 1.0
  - Resultado para o inicializacao.txt: Ok! Peso: 1.0
  - Resultado para o ranking.txt: Ok! Peso: 1.0
- - Resultado para o resumo.txt: Incorreto! Peso: 0.0
- - Nota para o Caso (soma dos pesos): 7.00 (soma total) - 0% (desconto do valgrind) = 7.00 de 8.0 pontos.
+ - Resultado para o resumo.txt: Ok! Peso: 1.0
+ - Nota para o Caso (soma dos pesos): 8.00 (soma total) - 0% (desconto do valgrind) = 8.00 de 8.0 pontos.
  - Pasta completo / Caso 7:
  - Resultado para o saida.txt: Ok! Peso: 3.0
  - Resultado para o estatisticas.txt: Ok! Peso: 1.0
@@ -191,24 +191,24 @@ EXECUTANDO O PROGRAMA EM CADA CASO:
  - Resultado para o heatmap.txt: Ok! Peso: 1.0
  - Resultado para o inicializacao.txt: Ok! Peso: 1.0
  - Resultado para o ranking.txt: Ok! Peso: 1.0
- - Resultado para o resumo.txt: Incorreto! Peso: 0.0
- - Nota para o Caso (soma dos pesos): 7.00 (soma total) - 0% (desconto do valgrind) = 7.00 de 8.0 pontos.
+ - Resultado para o resumo.txt: Ok! Peso: 1.0
+ - Nota para o Caso (soma dos pesos): 8.00 (soma total) - 0% (desconto do valgrind) = 8.00 de 8.0 pontos.
  - Pasta completo / Caso 9:
  - Resultado para o saida.txt: Ok! Peso: 3.0
  - Resultado para o estatisticas.txt: Ok! Peso: 1.0
  - Resultado para o heatmap.txt: Ok! Peso: 1.0
  - Resultado para o inicializacao.txt: Ok! Peso: 1.0
  - Resultado para o ranking.txt: Ok! Peso: 1.0
- - Resultado para o resumo.txt: Incorreto! Peso: 0.0
- - Nota para o Caso (soma dos pesos): 7.00 (soma total) - 0% (desconto do valgrind) = 7.00 de 8.0 pontos.
+ - Resultado para o resumo.txt: Ok! Peso: 1.0
+ - Nota para o Caso (soma dos pesos): 8.00 (soma total) - 0% (desconto do valgrind) = 8.00 de 8.0 pontos.
  - Pasta completo / Caso bonus_1:
  - Resultado para o saida.txt: Ok! Peso: 3.0
  - Resultado para o estatisticas.txt: Ok! Peso: 1.0
  - Resultado para o heatmap.txt: Ok! Peso: 1.0
  - Resultado para o inicializacao.txt: Ok! Peso: 1.0
  - Resultado para o ranking.txt: Ok! Peso: 1.0
- - Resultado para o resumo.txt: Incorreto! Peso: 0.0
- - Nota para o Caso (soma dos pesos): 7.00 (soma total) - 0% (desconto do valgrind) = 7.00 de 8.0 pontos.
+ - Resultado para o resumo.txt: Ok! Peso: 1.0
+ - Nota para o Caso (soma dos pesos): 8.00 (soma total) - 0% (desconto do valgrind) = 8.00 de 8.0 pontos.
  - Pasta completo / Caso bonus_2:
  - Resultado para o saida.txt: Ok! Peso: 3.0
  - Resultado para o estatisticas.txt: Ok! Peso: 1.0
@@ -239,9 +239,9 @@ EXECUTANDO O PROGRAMA EM CADA CASO:
  - Resultado para o heatmap.txt: Ok! Peso: 1.0
  - Resultado para o inicializacao.txt: Ok! Peso: 1.0
  - Resultado para o ranking.txt: Ok! Peso: 1.0
- - Resultado para o resumo.txt: Incorreto! Peso: 0.0
- - Nota para o Caso (soma dos pesos): 7.00 (soma total) - 0% (desconto do valgrind) = 7.00 de 8.0 pontos.
- - Nota para a pasta completo (máximo 11.0) - 185.00 de 208.0 - 88.00% de 11.0: 9.68.
+ - Resultado para o resumo.txt: Ok! Peso: 1.0
+ - Nota para o Caso (soma dos pesos): 8.00 (soma total) - 0% (desconto do valgrind) = 8.00 de 8.0 pontos.
+ - Nota para a pasta completo (máximo 11.0) - 198.00 de 208.0 - 95.00% de 11.0: 10.45.
  -----
 
 #######################################
@@ -254,10 +254,10 @@ Aluno: VitorSopraniPassamani
  - Pastas Compiladas Corretamente: 1 de 1 
  - Pastas Linkadas Corretamente: 1 de 1
  - Teste completo
- - Resultados corretos: 133 de 156
- - Nota de VitorSopraniPassamani para o teste completo: 9.68
- - Nota de VitorSopraniPassamani: 0+(9.68)
- - Nota de VitorSopraniPassamani: 9.68
+ - Resultados corretos: 146 de 156
+ - Nota de VitorSopraniPassamani para o teste completo: 10.45
+ - Nota de VitorSopraniPassamani: 0+(10.45)
+ - Nota de VitorSopraniPassamani: 10.45
 
 ----------------------------------------------------------------------------
 
