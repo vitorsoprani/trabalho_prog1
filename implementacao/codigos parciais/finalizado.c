@@ -114,6 +114,8 @@ int AparecePrimeiroQue(tInimigo inimigo1, tInimigo inimigo2);
 
 void GeraRanking(tInimigo inimigos[], int qtdInimigos, char diretorio[]);
 
+/*Retorna o frame atual do inimigo de acordo com a anmimação*/
+int FrameAtualInimigo(tInimigo inimigo, int iteracao);
 
 
 
@@ -375,30 +377,16 @@ tJogo DesenhaJogadorNaTela(tJogo jogo, tGridChar tela, tJogador jogador) {
 
 tJogo DesenhaInimigosNaTela(tJogo jogo, tGridChar tela, tInimigo inimigos[]) {
     //laço que percorre todos os inimigos do vetor
-    for (int x = 0; x < jogo.qtdInimigos; x++) {
-        if (inimigos[x].estaVivo) {
-            //laço que percorre todas as posições do desenho do inimigo
-            int k = -1;
-            int frame;
-
-            if (inimigos[x].animado) {
-                frame = jogo.iteracao % QTD_FRAMES;
-            } else {
-                frame = 0;
-            }
-
-            for (int i = 0; i < TAM_INIMIGO; i++) {
-                int l = -1;
-                for (int j = 0; j < TAM_INIMIGO; j++) {
-                    tela.grid[inimigos[x].y + k][inimigos[x].x + l] = inimigos[x].frames[frame][i][j];
-                    l++;
-                }
-                k++;
-            }
+    for (int i = 0; i < jogo.qtdInimigos; i++) {
+        if (inimigos[i].estaVivo) {
+            jogo.tela = DesenhaMatrizNaTela(jogo.tela,
+                TAM_INIMIGO,
+                TAM_INIMIGO,
+                inimigos[i].frames[FrameAtualInimigo(inimigos[i], jogo.iteracao)],
+                inimigos[i].x - 1,
+                inimigos[i].y - 1);
         }
     }
-
-    jogo.tela = tela;
 
     return jogo;
 }
@@ -902,6 +890,14 @@ void GeraRanking(tInimigo inimigos[], int qtdInimigos, char diretorio[]) {
 
     }
     fclose(arquivoRanking);
+}
+
+int FrameAtualInimigo(tInimigo inimigo, int iteracao) {
+    if (inimigo.animado) {
+        return iteracao % 3;
+    } else {
+        return 0;
+    }
 }
 
 
