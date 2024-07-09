@@ -316,13 +316,22 @@ tJogo InicializaJogo(char diretorio[]) {
 
 tJogo DesenhaMapaNaTela(tJogo jogo, tGridChar tela, tGridChar mapa) {
 
-    for (int i = 0; i < tela.altura + 2; i++) {
-        for (int j = 0; j < tela.largura + 2; j++) {
-            tela.grid[i][j] = mapa.grid[i][j];
-        }
-    }
+    // for (int i = 0; i < mapa.altura + 2; i++) {
+    //     for (int j = 0; j < mapa.largura + 2; j++) {
+    //         jogo.tela.grid[i + 0][j + 0] = mapa.grid[i][j];
+    //     }
+    // }
 
-    jogo.tela = tela;
+    // jogo.tela = tela;
+
+    jogo.tela = DesenhaMatrizNaTela(jogo.tela, (mapa.altura + 2), (mapa.largura + 2), mapa.grid, 0, 0);
+
+    // for (int i = 0; i < l; i++) {
+    //     for (int j = 0; j < c; j++) {
+    //         tela.grid[i + y][j + x] = matriz[i][j];
+    //     }
+    // }
+    // return tela;
 
     return jogo;
 }
