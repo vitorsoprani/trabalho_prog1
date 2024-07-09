@@ -1,3 +1,0 @@
-[@] Inimigo de indice 2 da fileira 1 colidiu na lateral direita.
-[9] Inimigo de indice 1 da fileira 1 foi atingido na posicao (16 3).
-[@] Inimigo de indice 1 da fileira 2 colidiu na lateral esquerda.

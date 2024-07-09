@@ -1,2 +1,0 @@
-[@] Inimigo de indice 2 da fileira 1 colidiu na lateral direita.
-[@] Inimigo de indice 1 da fileira 1 colidiu na lateral esquerda.

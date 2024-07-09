@@ -53,6 +53,14 @@ typedef struct {
 /*Cria o desenho do mapa*/
 tGridChar InicializaMapa(int largura, int altura, int alturaMaxInimigo);
 
+tGridChar InicializaTela(int largura, int altura);
+
+/*Função que desenha matrizes na tela, sendo o indice [0][0] da matriz localizado no ponto (x, y)*/
+tGridChar DesenhaMatrizNaTela(tGridChar tela, int l, int c, char matriz[l][c], int x, int y);
+
+/*Desenha o caracter fornecido no ponto indicado*/
+tGridChar DesenhaCaracterNaTela(tGridChar tela, char c, int x, int y);
+
 void ImprimeTela(tGridChar tela);
 
 
@@ -288,8 +296,7 @@ tJogo InicializaJogo(char diretorio[]) {
 
     jogo.heatMap = InicializaHeatMap(larguraMapa, alturaMapa);
 
-    //Inicialmente  não tem problema serem iguais. É mais conveniente do que criar outra função
-    jogo.tela = jogo.mapa;
+    jogo.tela = InicializaTela(larguraMapa + 2, alturaMapa + 2);
 
 
     jogo.qtdInimigos = InicializaInimigos(jogo.inimigos, mapa_txt, diretorio);
@@ -364,19 +371,7 @@ tJogo DesenhaTiroNaTela(tJogo jogo, tGridChar tela, tTiro tiro) {
 }
 
 tJogo DesenhaJogadorNaTela(tJogo jogo, tGridChar tela, tJogador jogador) {
-    //laço que percorre todas as posições do desenho do jogador
-    int k = -1;
-    for (int i = 0; i < TAM_JOGADOR; i++) {
-        int l = -1;
-        for (int j = 0; j < TAM_JOGADOR; j++) {
-            tela.grid[jogador.y + k][jogador.x + l] = jogador.desenho[i][j];
-            l++;
-        }
-        k++;
-    }
-
-    jogo.tela = tela;
-
+    jogo.tela = DesenhaMatrizNaTela(jogo.tela, TAM_JOGADOR, TAM_JOGADOR, jogador.desenho, jogador.x - 1, jogador.y - 1);
     return jogo;
 }
 
@@ -420,8 +415,8 @@ void GeraArquivoInicializacao(tGridChar tela, tJogador jogador, char diretorio[]
 
     //Desenha a tela em "inicializacao.txt"
 
-    for (int i = 0; i < tela.altura + 2; i++) {
-        for (int j = 0; j < tela.largura + 2; j++) {
+    for (int i = 0; i < tela.altura; i++) {
+        for (int j = 0; j < tela.largura; j++) {
             fprintf(arquivoInicializacao, "%c", tela.grid[i][j]);
         }
         fprintf(arquivoInicializacao, "\n");
@@ -668,9 +663,30 @@ tGridChar InicializaMapa(int largura, int altura, int alturaMaxInimigo) {
     return mapa;
 }
 
+tGridChar InicializaTela(int largura, int altura) {
+    tGridChar tela;
+    tela.altura = altura;
+    tela.largura = largura;
+    return tela;
+}
+
+tGridChar DesenhaMatrizNaTela(tGridChar tela, int l, int c, char matriz[l][c], int x, int y) {
+    for (int i = 0; i < l; i++) {
+        for (int j = 0; j < c; j++) {
+            tela.grid[i + y][j + x] = matriz[i][j];
+        }
+    }
+    return tela;
+}
+
+tGridChar DesenhaCaracterNaTela(tGridChar tela, char c, int x, int y) {
+    tela.grid[y][x] = c;
+    return tela;
+}
+
 void ImprimeTela(tGridChar tela) {
-    for (int i = 0; i < tela.altura + 2; i++) {
-        for (int j = 0; j < tela.largura + 2; j++) {
+    for (int i = 0; i < tela.altura; i++) {
+        for (int j = 0; j < tela.largura; j++) {
             printf("%c", tela.grid[i][j]);
         }
         printf("\n");
