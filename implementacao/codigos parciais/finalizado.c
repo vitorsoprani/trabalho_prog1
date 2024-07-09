@@ -360,18 +360,16 @@ tJogo AtualizaTela(tJogo jogo) {
 }
 
 tJogo DesenhaTiroNaTela(tJogo jogo, tGridChar tela, tTiro tiro) {
-
     if (tiro.estaAtivo) {
-        tela.grid[tiro.y][tiro.x] = tiro.s;
+        jogo.tela = DesenhaCaracterNaTela(jogo.tela, tiro.s, tiro.x, tiro.y);
     }
-
-    jogo.tela = tela;
 
     return jogo;
 }
 
 tJogo DesenhaJogadorNaTela(tJogo jogo, tGridChar tela, tJogador jogador) {
     jogo.tela = DesenhaMatrizNaTela(jogo.tela, TAM_JOGADOR, TAM_JOGADOR, jogador.desenho, jogador.x - 1, jogador.y - 1);
+
     return jogo;
 }
 
