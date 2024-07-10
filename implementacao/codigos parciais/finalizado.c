@@ -38,6 +38,12 @@ typedef struct {
 
 tGridInt InicializaHeatMap(int largura, int altura);
 
+/*Atualiza as posições ocupadas pelo jogador no heatmap*/
+tGridInt AtualizaJogadorHeatMap(tGridInt heatMap, int x, int y);
+
+/*Atualiza a posição ocuypada pelo triro*/
+tGridInt AtualizaTiroHeatMap(tGridInt heatMap, int x, int y);
+
 void GeraHeatMap(tGridInt heatMap, char diretorio[]);
 
 
@@ -332,23 +338,13 @@ tJogo DesenhaMapaNaTela(tJogo jogo, tGridChar tela, tGridChar mapa) {
 
 tJogo AtualizaHeatMap(tJogo jogo, tGridInt heatMap, tTiro tiro, tJogador jogador) {
     if (tiro.estaAtivo) {
-        if (heatMap.grid[tiro.y - 1][tiro.x - 1] < 999) {
-            heatMap.grid[tiro.y - 1][tiro.x - 1]++;
-            //Tanto o jogador qunto o tiro devem ter uma "defasagem" de -1 nas coordenadas,
-            //pois essas são referentes ao mapa (considerando as molduras) e não ao heatmap (que não tem molduras) 
-        }
+        jogo.heatMap = AtualizaTiroHeatMap(jogo.heatMap, tiro.x - 1, tiro.y - 1);
+        //tanto o tiro quanto o jogador devem ter uma "defasagem" de -1 nas coordenadas
+        //pois esses valores são referentes ao mapa(possui molduras) e não ao heatmap(sem molduras).
     }
 
-    //Laço que percorre todas as posições do jogador (em relação ao centro)
-    for (int i = -1; i <= 1; i++) {
-        for (int j = -1; j <= 1; j++) {
-            if (heatMap.grid[jogador.y + i - 1][jogador.x + j - 1] < 999) {
-                heatMap.grid[jogador.y + i - 1][jogador.x + j - 1]++;
-            }
-        }
-    }
+    jogo.heatMap = AtualizaJogadorHeatMap(jogo.heatMap, jogador.x - 1, jogador.y - 1);
 
-    jogo.heatMap = heatMap;
     return jogo;
 }
 
@@ -697,6 +693,21 @@ tGridInt InicializaHeatMap(int largura, int altura) {
         }
     }
 
+    return heatMap;
+}
+
+tGridInt AtualizaJogadorHeatMap(tGridInt heatMap, int x, int y) {
+    //laço que percorre todas as posições relativas ao jogador no heatmap
+    for (int i = -1; i <= 1; i++) {
+        for (int j = -1; j <= 1; j++) {
+            if (heatMap.grid[y + i][x + j] < 999) heatMap.grid[y + i][x + j]++;
+        }
+    }
+    return heatMap;
+}
+
+tGridInt AtualizaTiroHeatMap(tGridInt heatMap, int x, int y) {
+    if (heatMap.grid[y][x] < 999) heatMap.grid[y][x]++;
     return heatMap;
 }
 
