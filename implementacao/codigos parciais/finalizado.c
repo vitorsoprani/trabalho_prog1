@@ -202,15 +202,15 @@ tJogo InicializaJogo(char diretorio[]);
 
 tJogo DesenhaMapaNaTela(tJogo jogo, tGridChar tela, tGridChar mapa);
 
-tJogo AtualizaHeatMap(tJogo jogo, tGridInt heatMap, tTiro tiro, tJogador jogador);
+tJogo AtualizaHeatMap(tJogo jogo, tTiro tiro, tJogador jogador);
 
-tJogo DesenhaTiroNaTela(tJogo jogo, tGridChar tela, tTiro tiro);
+tJogo DesenhaTiroNaTela(tJogo jogo, tTiro tiro);
 
 /*Não são checados casos de sobreposição nem colisões.
 Considera-se que essas verificações são feitas na função de movimentar o jogador*/
-tJogo DesenhaJogadorNaTela(tJogo jogo, tGridChar tela, tJogador jogador);
+tJogo DesenhaJogadorNaTela(tJogo jogo, tJogador jogador);
 
-tJogo DesenhaInimigosNaTela(tJogo jogo, tGridChar tela, tInimigo inimigos[]);
+tJogo DesenhaInimigosNaTela(tJogo jogo, tInimigo inimigos[]);
 
 tJogo AtualizaTela(tJogo jogo);
 
@@ -308,7 +308,6 @@ tJogo InicializaJogo(char diretorio[]) {
 
 
     jogo.qtdInimigos = InicializaInimigos(jogo.inimigos, mapa_txt, diretorio);
-    //    jogo.tiro = InicializaTiro();
 
     jogo.tiro = InicializaTiro();
 
@@ -336,7 +335,7 @@ tJogo DesenhaMapaNaTela(tJogo jogo, tGridChar tela, tGridChar mapa) {
     return jogo;
 }
 
-tJogo AtualizaHeatMap(tJogo jogo, tGridInt heatMap, tTiro tiro, tJogador jogador) {
+tJogo AtualizaHeatMap(tJogo jogo, tTiro tiro, tJogador jogador) {
     if (tiro.estaAtivo) {
         jogo.heatMap = AtualizaTiroHeatMap(jogo.heatMap, tiro.x - 1, tiro.y - 1);
         //tanto o tiro quanto o jogador devem ter uma "defasagem" de -1 nas coordenadas
@@ -351,16 +350,16 @@ tJogo AtualizaHeatMap(tJogo jogo, tGridInt heatMap, tTiro tiro, tJogador jogador
 tJogo AtualizaTela(tJogo jogo) {
     jogo = DesenhaMapaNaTela(jogo, jogo.tela, jogo.mapa);
 
-    jogo = DesenhaJogadorNaTela(jogo, jogo.tela, jogo.jogador);
+    jogo = DesenhaJogadorNaTela(jogo, jogo.jogador);
 
-    jogo = DesenhaInimigosNaTela(jogo, jogo.tela, jogo.inimigos);
+    jogo = DesenhaInimigosNaTela(jogo, jogo.inimigos);
 
-    jogo = DesenhaTiroNaTela(jogo, jogo.tela, jogo.tiro);
+    jogo = DesenhaTiroNaTela(jogo, jogo.tiro);
 
     return jogo;
 }
 
-tJogo DesenhaTiroNaTela(tJogo jogo, tGridChar tela, tTiro tiro) {
+tJogo DesenhaTiroNaTela(tJogo jogo, tTiro tiro) {
     if (tiro.estaAtivo) {
         jogo.tela = DesenhaCaracterNaTela(jogo.tela, tiro.s, tiro.x, tiro.y);
     }
@@ -368,13 +367,13 @@ tJogo DesenhaTiroNaTela(tJogo jogo, tGridChar tela, tTiro tiro) {
     return jogo;
 }
 
-tJogo DesenhaJogadorNaTela(tJogo jogo, tGridChar tela, tJogador jogador) {
+tJogo DesenhaJogadorNaTela(tJogo jogo, tJogador jogador) {
     jogo.tela = DesenhaMatrizNaTela(jogo.tela, TAM_JOGADOR, TAM_JOGADOR, jogador.desenho, jogador.x - 1, jogador.y - 1);
 
     return jogo;
 }
 
-tJogo DesenhaInimigosNaTela(tJogo jogo, tGridChar tela, tInimigo inimigos[]) {
+tJogo DesenhaInimigosNaTela(tJogo jogo, tInimigo inimigos[]) {
     //laço que percorre todos os inimigos do vetor
     for (int i = 0; i < jogo.qtdInimigos; i++) {
         if (inimigos[i].estaVivo) {
@@ -436,7 +435,7 @@ tJogo RealizaJogo(tJogo jogo, char diretorio[]) {
     while (TRUE) {
         //system("clear");
         jogo = AtualizaTela(jogo);
-        jogo = AtualizaHeatMap(jogo, jogo.heatMap, jogo.tiro, jogo.jogador);
+        jogo = AtualizaHeatMap(jogo, jogo.tiro, jogo.jogador);
         printf("Pontos: %d | Iteracoes: %d\n", jogo.pontos, jogo.iteracao);
         ImprimeTela(jogo.tela);
 
